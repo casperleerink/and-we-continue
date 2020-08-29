@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquafinality</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/101668a678.js" crossorigin="anonymous"></script>
+    <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js" integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA==" crossorigin="anonymous"></script>
+    <script src="fullscreen.js" defer></script>
+    <script src="stream.js" defer></script>
+    <script type="module" src="script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div id="stream-container">
+            <!-- <img src="bg-img.jpg"> -->
+        </div>
+        <div id="sketch-container">
+            <!-- <div class="control-bar">
+                <button>Click on other to become friends</button>
+            </div> -->
+            <button id="fsButton" onclick="toggleFullscreen()"><i class="fas fa-expand"></i></button>
+        </div>
+        <div id="welcome-page"></div>
+    </div>
+</body>
+</html>
