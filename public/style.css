@@ -46,11 +46,23 @@ body {
     height: 56.25vw;
 }
 #stream-container {
+    display: none;
     z-index: -1;
     position: absolute;
     overflow: hidden;
     width: 100vw;
     height: 56.25vw;
+    background-color: white;
+}
+#welcome-page {
+    display: block;
+    position: absolute;
+    /* overflow: hidden; */
+    overflow-y: scroll;
+    width: 100vw;
+    max-height: 56.25vw;
+    min-height: 56.25vw;
+    background-color: black;
 }
 @media (min-aspect-ratio: 16/9) {
     #sketch-container {
@@ -61,17 +73,50 @@ body {
         height: 100vh;
         width: 177.78vh;
     }
+    #welcome-page {
+        max-height: 100vh;
+        width: 177.78vh;
+    }
 }
 
 
 .hide {
     display: none;
 }
+.show {
+    transition: 2s;
+    opacity: 1.0 !important;
+}
 #fsButton {
     position: absolute;
     padding: 0.3rem 0.8rem;
     bottom: 10px;
     right: 10px;
+}
+
+/* Welcome page styling */
+.welcome-container {
+    padding: 1rem;
+    width: 100%;
+    /* min-height: 100%; */
+}
+.welcome-container h1 {
+    padding: 1rem 0;
+}
+.welcome-container .quote {
+    padding-left: 1rem;
+}
+.welcome-container button {
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin: 1rem 0;
+}
+.welcome-container li {
+    font-size: 0.8rem;
+}
+
+.extra-padding {
+    padding-bottom: 3rem;
 }
 
 .control-bar {

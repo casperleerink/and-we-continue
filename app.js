@@ -34,8 +34,8 @@ io.on('connection', (socket) => {
     const types = ["ICE", "CLOUD", "RAIN", "HAIL", "OCEAN", "RIVER", "AQUIFER"];
     clients[socket.id] = {
         type: util.random(types),
-        x: 0.5,
-        y: 0.7,
+        x: Math.random() * 0.5 + 0.25,
+        y: Math.random() * 0.5 + 0.5,
     }
     socket.on('getClients', () => {
         io.emit('clients', JSON.stringify(clients));

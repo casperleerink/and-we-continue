@@ -1,17 +1,18 @@
-import Ice from './modules/ice.js'
-import Ocean from './modules/ocean.js'
-import Cloud from './modules/cloud.js'
-import Rain from './modules/rain.js'
-import Hail from './modules/hail.js'
-import River from './modules/river.js'
-import Aquifer from './modules/aquifer.js'
-import Me from './modules/me.js'
-import Story from './modules/story.js'
+import Ice from './ice.js'
+import Ocean from './ocean.js'
+import Cloud from './cloud.js'
+import Rain from './rain.js'
+import Hail from './hail.js'
+import River from './river.js'
+import Aquifer from './aquifer.js'
+import Me from './me.js'
+import Story from './story.js'
+
 const sketchContainer = document.getElementById('sketch-container');
-const socket = io();
+export const socket = io();
 
 //The Sketch!
-const sketch = (p) => {
+export const sketch = (p) => {
     const userID = socket.io.engine.id;
     let following;
     let cnv;
@@ -22,13 +23,13 @@ const sketch = (p) => {
     const types = ["ICE", "CLOUD", "RAIN", "HAIL", "OCEAN", "RIVER", "AQUIFER"];
     const others = {};
     p.preload = () => {
-        img = p.loadImage('arctic-me.png');
+        img = p.loadImage('./arctic-me.png');
     }
     p.setup = () => {
         //create canvas with width and height of container
         const containerPos = sketchContainer.getBoundingClientRect();
         cnv = p.createCanvas(containerPos.width, containerPos.height);
-        p.frameRate(30);
+        p.frameRate(25);
         //when a user presses anywhere on the canvas
         cnv.mousePressed(() => {
             if (me) {
@@ -51,8 +52,7 @@ const sketch = (p) => {
         p.imageMode(p.CENTER);
         p.textAlign(p.CENTER);
 
-        //socket io setup
-
+        //socket io setup// all event listeners for received messages
         //receive all clients initial data
         socket.on('clients', (data) => {
             const parsed = JSON.parse(data);
@@ -72,7 +72,6 @@ const sketch = (p) => {
                 }
             });
         });
-        socket.emit('getClients');
         socket.on('updatedPosition', data => {
             const parsed = JSON.parse(data);
             others[parsed.id].pos = {
@@ -83,6 +82,7 @@ const sketch = (p) => {
         socket.on('removeClient', id => {
             delete others[id];
         });
+        socket.emit('getClients'); //get info from clients at setup, also sends to everyone else.
     }
 
     //resize canvas
@@ -92,19 +92,15 @@ const sketch = (p) => {
         p.resizeCanvas(containerPos.width, containerPos.height);
     }
 
-    //draw happens 30-60 times per second
+    //draw happens ±30 times per second
     p.draw = () => {
         p.clear();
         p.background(0, 0);
-        // p.stroke(255);
-        p.fill(0, 0, 0);
         p.noStroke();
         if (me) {
             me.draw(p, img);
             me.onHover(p.mouseX/p.width, p.mouseY/p.height, p, story.line);
             if (following) {
-                const followPos = following.pos;
-                // p.ellipse(p.width*testMouse.x, p.height*testMouse.y, 5, 5);
                 me.follow(p, following.pos.x, following.pos.y, -0.05);
             }
             if (me.visibleToOthers) {
@@ -122,12 +118,6 @@ const sketch = (p) => {
         }
     }
 };
-
-// socket.on('connect', () => {
-//     new p5(sketch, sketchContainer);
-// });
-
-
 function createNewToken(data, p5) {
     switch (data.type) {
         case "ICE":
@@ -148,5 +138,3 @@ function createNewToken(data, p5) {
             return new Ocean(data.x, data.y, 5);
     }
 }
-
-export default sketch;
