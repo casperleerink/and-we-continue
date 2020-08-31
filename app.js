@@ -1,10 +1,10 @@
-const path = require("path");
-const bodyParser = require("body-parser");
 const express = require('express');
 const app = express();
 const http = require("http").createServer(app);
 var io = require('socket.io')(http);
 const util = require('./modules/util.js');
+
+const port = process.env.PORT || 8000;
 
 app.set('view-engine', 'ejs');
 express.static.mime.define({'application/javascript': ['js']});
@@ -18,7 +18,7 @@ app.get("/finality", (req, res) => {
     res.render('finality.ejs');
 });
 
-http.listen(8000, () => {
+http.listen(port, () => {
     console.log("Server is listening on port: 8000");
 });
 

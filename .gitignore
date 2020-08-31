@@ -1,2 +1,4 @@
-node_modules
-media
+/node_modules
+/media
+.DS_Store
+/*.env
