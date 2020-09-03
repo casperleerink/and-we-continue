@@ -41,8 +41,10 @@ io.on('connection', (socket) => {
         io.emit('clients', JSON.stringify(clients));
     });
     socket.on('updatePosition', data => {
-        clients[socket.id].x = data.x;
-        clients[socket.id].y = data.y;
+        if (clients[socket.id]) {
+            clients[socket.id].x = data.x;
+            clients[socket.id].y = data.y;
+        }
         socket.broadcast.emit('updatedPosition', JSON.stringify({
             id: socket.id,
             x: data.x,
