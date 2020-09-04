@@ -1,15 +1,14 @@
 import Token from "./token.js"
 
 class Me extends Token {
-    constructor(x, y, size, type) {
-        super(x, y, size);
-        this._type = type;
+    constructor(x, y, size, p, type) {
+        super(x, y, size, p, type);
         this._velocity = {
             x: 0.0,
             y: 0.0,
         }
         this._friction = 0.05; //0 = no friction 1=full friction (immediate stop)
-        this._visibleToOthers = true;
+        this._visibleToOthers = false;
     }
 
     get type() {
@@ -87,10 +86,10 @@ class Me extends Token {
         }
     }
     borderCheck() {
-        if (this._pos.x > 0.95 || this._pos.x < 0.05) {
+        if (this._pos.x > 1.0 || this._pos.x < 0.0) {
             this._velocity.x *= -1;
         }
-        if (this._pos.y > 0.95 || this._pos.y < 0.05) {
+        if (this._pos.y > 1.0 || this._pos.y < 0.0) {
             this._velocity.y *= -1;
         }
     }
@@ -99,11 +98,12 @@ class Me extends Token {
     draw(p5, img) {
         if (this._visible) {
             this.moveStep(); //renew position
-            const currentSize = this._size * this._sizeMult;
+            super.draw(p5);
+            // const currentSize = this._size * this._sizeMult;
             p5.push();
             p5.fill(this._color);
-            p5.ellipse(this._pos.x*p5.width, this._pos.y*p5.height, currentSize*4, currentSize*4);
-            p5.image(img, this._pos.x*p5.width, this._pos.y*p5.height, currentSize*4, currentSize*3.5);
+            // p5.ellipse(this._pos.x*p5.width, this._pos.y*p5.height, currentSize*4, currentSize*4);
+            p5.image(img, this._pos.x*p5.width, this._pos.y*p5.height, this._size*3, this._size*2);
             p5.pop();
         }
     }

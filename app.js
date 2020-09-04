@@ -31,13 +31,14 @@ const clients = {};
 
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
-    const types = ["ICE", "CLOUD", "RAIN", "HAIL", "OCEAN", "RIVER", "AQUIFER"];
+    const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
     socket.on('getClients', () => {
         clients[socket.id] = {
             type: util.random(types),
-            x: Math.random() * 0.5 + 0.25,
-            y: Math.random() * 0.5 + 0.5,
-        }
+            x: Math.random(),
+            y: Math.random(),
+            visible: false,
+        };
         io.emit('clients', JSON.stringify(clients));
     });
     socket.on('updatePosition', data => {
@@ -51,6 +52,12 @@ io.on('connection', (socket) => {
             y: data.y
         }));
     });
+
+    //admin only messages
+    socket.on('changePart', part => {
+        io.emit('part', part);
+    });
+
     socket.on('disconnect', () => {
         io.sockets.emit('removeClient', socket.id);
         delete clients[socket.id];

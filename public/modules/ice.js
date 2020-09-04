@@ -23,7 +23,7 @@ class Ice extends Token {
                 p5.vertex(sx, sy);
             }
             p5.endShape(p5.CLOSE);
-            p5.pop();   
+            p5.pop();
         }
     }
 }

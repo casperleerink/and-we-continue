@@ -1,18 +1,30 @@
 class Story {
     constructor(type) {
         this._type = type;
-        this._text = getBeginText(this._type);
+        this._text1 = getBeginText(this._type);
+        this._text1End = {
+            "ICE": "My time feels longer here, longer than you.",
+            "CLOUD": "My time feels shorter here, shorter than you.",
+            "PRECIPITATION": "My time passes quickly here, quicker than you.",
+            "RIVER": "My time feels similar here, similar to you.",
+            "OCEAN": "My time feels longer here, longer than you.",
+            "AQUIFER": "My time feels long here, longer than you.",
+        }
         this._index = 0;
     }
     get line() {
-        return this._text[this._index];
+        return this._text1[this._index];
+    }
+
+    text1EndLine(type) {
+        return this._text1End[type];
     }
     nextLine() {
         this._index++;
     }
 
     draw(p5) {
-        p5.text(this._text[this._index], p5.width * 0.5, p5.height * 0.5);
+        p5.text(this._text1[this._index], 0, 0);
     }
 }
 
@@ -40,18 +52,11 @@ function getBeginText(type) {
                 "my view is less of a bird and more of hazy",
             ]
             break;
-        case "RAIN":
+        case "PRECIPITATION":
             text = [
-                "Free-",
-                "fall",
-                "Deluge",
-            ]
-            break;
-        case "HAIL":
-            text = [
-                "I am harsh and still not",
-                "Hard enough.",
-                "The impact stings me with undo",
+                "Free,",
+                "Fall,",
+                "I Deluge",
             ]
             break;
         case "OCEAN":
