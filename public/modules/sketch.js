@@ -9,7 +9,9 @@ export const socket = io();
 export const sketch = (p) => {
     const userID = socket.io.engine.id;
     let part = 1;
+    let timeStamp = 0;
     let following;
+    let following_closeness = -0.05;
     let cnv;
     let img;
     let me;
@@ -45,10 +47,14 @@ export const sketch = (p) => {
             if (part === 2) {
                 const otherIDs = Object.keys(others);
                 if (otherIDs.length > 0) {
+                    following = undefined;
                     otherIDs.forEach(id => {
-                        others[id].onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
-                            following = others[id];
-                        });
+                        const t = others[id];
+                        if (t.type === me.type) {
+                            t.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+                                following = others[id];
+                            });
+                        }
                     });
                 }
             }
@@ -88,6 +94,12 @@ export const sketch = (p) => {
         //change part [I YOU OUR WE I]
         socket.on('part', partNum => {
             part = partNum;
+            timeStamp = p.millis();
+            if (part === 2) {
+                Object.keys(others).forEach(id => {
+                    others[id].visible = true;
+                });
+            }
         });
         //when client leaves clean up data event
         socket.on('removeClient', id => {
@@ -110,11 +122,13 @@ export const sketch = (p) => {
         p.clear();
         p.background(0, 0);
         p.noStroke();
+        helpText(p, part, timeStamp);
         if (me) {
             me.draw(p, img);
             me.onHover(p.mouseX/p.width, p.mouseY/p.height, p, story, part);
             if (following) {
-                me.follow(p, following.pos.x, following.pos.y, -0.05);
+                const closeness = following_closeness * (p.sin(p.frameCount * 0.03) * 0.2 + 1.0);
+                me.follow(p, following.pos.x, following.pos.y, closeness);
             }
             if (me.visibleToOthers) {
                 if (me.isMoving()) {
@@ -131,3 +145,32 @@ export const sketch = (p) => {
         }
     }
 };
+
+
+const helpText = (p, part, timeStamp) => {
+    const timeDiff = p.millis() - timeStamp;
+    switch (part) {
+        case 1:
+            if (timeDiff < 8000) {
+                p.push();
+                p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
+                p.textSize(20);
+                p.text("CLICK anywhere to explore", 0.5*p.width, 0.5*p.height);
+                p.pop();
+            }
+            break;
+        case 2:
+            if (timeDiff < 8000) {
+                p.push();
+                p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
+                p.textSize(20);
+                p.text("FIND and click on others who are like you.", 0.5*p.width, 0.5*p.height);
+                p.pop();
+            }
+            break;
+        default:
+            break;
+    }
+    if (part === 1) {
+    }
+}

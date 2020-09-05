@@ -8,7 +8,7 @@ class Me extends Token {
             y: 0.0,
         }
         this._friction = 0.05; //0 = no friction 1=full friction (immediate stop)
-        this._visibleToOthers = false;
+        this._color[1] = 150;
     }
 
     get type() {
@@ -100,11 +100,11 @@ class Me extends Token {
             this.moveStep(); //renew position
             super.draw(p5);
             // const currentSize = this._size * this._sizeMult;
-            p5.push();
-            p5.fill(this._color);
-            // p5.ellipse(this._pos.x*p5.width, this._pos.y*p5.height, currentSize*4, currentSize*4);
-            p5.image(img, this._pos.x*p5.width, this._pos.y*p5.height, this._size*3, this._size*2);
-            p5.pop();
+            // p5.push();
+            // p5.fill(this._color);
+            // // p5.ellipse(this._pos.x*p5.width, this._pos.y*p5.height, currentSize*4, currentSize*4);
+            // p5.image(img, this._pos.x*p5.width, this._pos.y*p5.height, this._size*3, this._size*2);
+            // p5.pop();
         }
     }
 
@@ -112,7 +112,7 @@ class Me extends Token {
         const d = p5.dist(this._pos.x, this._pos.y, x, y);
         const angle = p5.atan2(y-this._pos.y, x-this._pos.x);
         const magnitude = p5.map(d, 0.0, 1.0, closeness, 1.0) * 0.03;
-        this._velocity.x = p5.cos(angle) * magnitude;
+        this._velocity.x = p5.cos(angle) * magnitude * p5.random(0.9, 1);
         this._velocity.y = p5.sin(angle) * magnitude;
     }
 }

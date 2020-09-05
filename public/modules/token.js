@@ -48,6 +48,12 @@ class Token {
             console.error('size has to be a number');
         }
     }
+    get type() {
+        return this._type;
+    }
+    set type(t) {
+        this._type = t;
+    }
     get color() {
         return this._color;
     }
