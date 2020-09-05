@@ -41,6 +41,13 @@ io.on('connection', (socket) => {
         };
         io.emit('clients', JSON.stringify(clients));
     });
+    socket.on('visible', (b) => {
+        clients[socket.id].visible = b;
+        socket.broadcast.emit('updateVisibility', JSON.stringify({
+            id: socket.id,
+            visible: b,
+        }));
+    });
     socket.on('updatePosition', data => {
         if (clients[socket.id]) {
             clients[socket.id].x = data.x;

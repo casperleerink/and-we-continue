@@ -41,10 +41,14 @@ export const sketch = (p) => {
             if (part === 1) {
                 me.attractionPoint(0.03, p.mouseX/p.width, p.mouseY/p.height, p);
                 me.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
-                    story.nextLine();
+                    const isLastLine = story.nextLine();
+                    if (isLastLine) {
+                        //send visible to others
+                        // me.visibleToOthers = true;
+                        socket.emit('visible', true);
+                    }
                 });
-            }
-            if (part === 2) {
+            } else if (part === 2) {
                 const otherIDs = Object.keys(others);
                 if (otherIDs.length > 0) {
                     following = undefined;
@@ -57,7 +61,21 @@ export const sketch = (p) => {
                         }
                     });
                 }
+            } else if (part === 3) {
+                const otherIDs = Object.keys(others);
+                if (otherIDs.length > 0) {
+                    following = undefined;
+                    otherIDs.forEach(id => {
+                        const t = others[id];
+                        if (t.type !== me.type) {
+                            t.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+                                following = others[id];
+                            });
+                        }
+                    })
+                }
             }
+
         });
 
         //socket io setup// all event listeners for received messages
@@ -83,6 +101,12 @@ export const sketch = (p) => {
                 }
             });
         });
+        socket.on('updateVisibility', (data) => {
+            const parsed = JSON.parse(data);
+            if (others[parsed.id]) {
+                others[parsed.id].visible = parsed.visible;
+            }
+        })
         //update position of given token
         socket.on('updatedPosition', data => {
             const parsed = JSON.parse(data);
@@ -130,10 +154,8 @@ export const sketch = (p) => {
                 const closeness = following_closeness * (p.sin(p.frameCount * 0.03) * 0.2 + 1.0);
                 me.follow(p, following.pos.x, following.pos.y, closeness);
             }
-            if (me.visibleToOthers) {
-                if (me.isMoving()) {
-                    socket.emit('updatePosition', me.pos);
-                }
+            if (me.isMoving()) {
+                socket.emit('updatePosition', me.pos);
             }
         }
         const otherIDs = Object.keys(others);

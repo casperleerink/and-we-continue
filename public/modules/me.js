@@ -15,13 +15,13 @@ class Me extends Token {
         return this._type;
     }
 
-    get visibleToOthers() {
-        return this._visibleToOthers;
-    }
+    // get visibleToOthers() {
+    //     return this._visibleToOthers;
+    // }
 
-    set visibleToOthers(b) {
-        this._visibleToOthers = b;
-    }
+    // set visibleToOthers(b) {
+    //     this._visibleToOthers = b;
+    // }
 
     get velocity() {
         return this._velocity;
