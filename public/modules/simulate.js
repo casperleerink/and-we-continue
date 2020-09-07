@@ -1,25 +1,31 @@
 import Token from "./token.js"
 
-class Me extends Token {
+class Simulate extends Token {
     constructor(x, y, size, p, type) {
         super(x, y, size, p, type);
+        this._visible = true;
         this._velocity = {
             x: 0.0,
             y: 0.0,
         }
-        this._visible = true;
         this._friction = 0.05; //0 = no friction 1=full friction (immediate stop)
-        this._color[1] = 150;
+        this._isActive = false;
+        this._following = undefined;
+        this._followingCloseness = -0.05;
+
+        //socket
+        this._socket = io();
+
+        //event listeners
+        this._socket.on('connect', () => {
+            this._socket.emit('newClient', JSON.stringify({
+                type,
+                x, 
+                y,
+                visible: true
+            }));
+        });
     }
-
-    // get visibleToOthers() {
-    //     return this._visibleToOthers;
-    // }
-
-    // set visibleToOthers(b) {
-    //     this._visibleToOthers = b;
-    // }
-
     get friction() {
         return this._friction;
     }
@@ -32,6 +38,32 @@ class Me extends Token {
         }
     }
 
+    get isActive() {
+        return this._isActive;
+    }
+    set isActive(b) {
+        this._isActive = b;
+        this._color[1] = b ? 200 : 90;
+        this._size = b ? 8 : 5;
+    }
+
+    get following() {
+        return this._following;
+    }
+    set following(other) {
+        this._following = other;
+    }
+
+    get followingCloseness() {
+        return this._followingCloseness;
+    }
+    set followingCloseness(f) {
+        if (f >= -1.0 && f <= 0.0) {
+            this._followingCloseness = f;
+        } else {
+            console.error('following closeness should be a number between -1 and 0');
+        }
+    }
     get velocity() {
         return this._velocity;
     }
@@ -64,7 +96,7 @@ class Me extends Token {
     }
 
     /**
-     * Pushes ice toward a point.
+     * Pushes me toward a point.
      * The force is added to the current velocity.
      *
      * @method attractionPoint
@@ -86,7 +118,6 @@ class Me extends Token {
         this._pos.y += this._velocity.y;
         this._velocity.x *= 1.0-this._friction;
         this._velocity.y *= 1.0-this._friction;
-        this.borderCheck();
         if (this._velocity.x > -0.0001 && this._velocity.x < 0.0001) {
             this._velocity.x = 0.0;
         }
@@ -109,9 +140,13 @@ class Me extends Token {
             this.moveStep(); //renew position
             super.draw(p5);
         }
+        if (this.isMoving()) {
+            this._socket.emit('updatePosition', this._pos);
+        }
     }
     //called inside sketch draw if following someone else
-    follow(p5, x, y, closeness) {
+    follow(p5, x, y) {
+        const closeness = this._followingCloseness * (p5.sin(p5.frameCount * 0.03) * 0.02 + 1.0);
         const d = p5.dist(this._pos.x, this._pos.y, x, y);
         const angle = p5.atan2(y-this._pos.y, x-this._pos.x);
         const magnitude = p5.map(d, 0.0, 1.0, closeness, 1.0) * 0.03;
@@ -120,4 +155,4 @@ class Me extends Token {
     }
 }
 
-export default Me;
+export default Simulate;

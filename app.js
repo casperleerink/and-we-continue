@@ -28,10 +28,16 @@ http.listen(port, () => {
 //SOCKET.IO config//
 //////////
 const clients = {};
+const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
 
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
-    const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
+    socket.on('disconnect', () => {
+        io.sockets.emit('removeClient', socket.id);
+        delete clients[socket.id];
+        console.log(`${socket.id} disconnected`);
+    });
+
     socket.on('getClients', () => {
         clients[socket.id] = {
             type: util.random(types),
@@ -41,8 +47,15 @@ io.on('connection', (socket) => {
         };
         io.emit('clients', JSON.stringify(clients));
     });
+    socket.on('newClient', data => {
+        const parsed = JSON.parse(data);
+        clients[socket.id] = data;
+        io.emit('clients', JSON.stringify(clients));
+    });
     socket.on('visible', (b) => {
-        clients[socket.id].visible = b;
+        if (clients[socket.id]) {
+            clients[socket.id].visible = b;
+        }
         socket.broadcast.emit('updateVisibility', JSON.stringify({
             id: socket.id,
             visible: b,
@@ -63,11 +76,5 @@ io.on('connection', (socket) => {
     //admin only messages
     socket.on('changePart', part => {
         io.emit('part', part);
-    });
-
-    socket.on('disconnect', () => {
-        io.sockets.emit('removeClient', socket.id);
-        delete clients[socket.id];
-        console.log(`${socket.id} disconnected`);
     });
 });

@@ -1,4 +1,5 @@
-import {socket, sketch} from './modules/sketch.js'
+// import {socket, sketch} from './modules/sketch.js'
+import {sketch} from './modules/simulationSketch.js'
 import Stream from './modules/stream.js'
 import fullScreenButton from './modules/fullscreen.js'
 
@@ -11,10 +12,8 @@ const streamingPlayer = new Stream(document.getElementById('stream-container'), 
 //add fullscreen support
 fullScreenButton();
 
-socket.on('connect', () => {
-    startButton.addEventListener('click', () => {
-        welcomePage.style.display = "none";
-        streamingPlayer.start();
-        new p5(sketch, sketchContainer);
-    });
+startButton.addEventListener('click', () => {
+    welcomePage.style.display = "none";
+    streamingPlayer.start();
+    new p5(sketch, sketchContainer);
 });

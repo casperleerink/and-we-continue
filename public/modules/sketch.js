@@ -13,15 +13,12 @@ export const sketch = (p) => {
     let following;
     let following_closeness = -0.05;
     let cnv;
-    let img;
     let me;
     let story;
     //implement object with userID as keys and token as values
     const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
     const others = {};
-    p.preload = () => {
-        img = p.loadImage('./arctic-me.png');
-    }
+
     p.setup = () => {
 
         //create canvas with width and height of container
@@ -43,8 +40,6 @@ export const sketch = (p) => {
                 me.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
                     const isLastLine = story.nextLine();
                     if (isLastLine) {
-                        //send visible to others
-                        // me.visibleToOthers = true;
                         socket.emit('visible', true);
                     }
                 });
@@ -72,7 +67,7 @@ export const sketch = (p) => {
                                 following = others[id];
                             });
                         }
-                    })
+                    });
                 }
             }
 
@@ -148,7 +143,7 @@ export const sketch = (p) => {
         p.noStroke();
         helpText(p, part, timeStamp);
         if (me) {
-            me.draw(p, img);
+            me.draw(p);
             me.onHover(p.mouseX/p.width, p.mouseY/p.height, p, story, part);
             if (following) {
                 const closeness = following_closeness * (p.sin(p.frameCount * 0.03) * 0.2 + 1.0);
@@ -165,6 +160,7 @@ export const sketch = (p) => {
                 others[id].onHover(p.mouseX/p.width, p.mouseY/p.height, p, story, part);
             });
         }
+
     }
 };
 
@@ -192,7 +188,5 @@ const helpText = (p, part, timeStamp) => {
             break;
         default:
             break;
-    }
-    if (part === 1) {
     }
 }

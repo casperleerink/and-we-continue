@@ -7,7 +7,7 @@ class Token {
         this._size = size;
         this._type = type;
         this._color = [6, 90, 150, 255];
-        this._visible = true;
+        this._visible = false;
         if (this._type === "ICE" || this._type === "RIVER") {
             this._tilt = p.random(0.0, p.TWO_PI);
         }
