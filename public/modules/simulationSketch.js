@@ -64,7 +64,8 @@ export const sketch = (p) => {
 
         // ---SETUP SIMULATIONS TEST ONLY---
         for (let i = 0; i < 40; i++) {
-            simulations.push(new Simulate(Math.random(), Math.random(), 5, p, p.random(types)));
+            const socket = io({transports: ['websocket']});
+            simulations.push(new Simulate(Math.random(), Math.random(), 5, p, p.random(types), socket));
         }
         me = simulations[simulationIndex];
         me.isActive = true;

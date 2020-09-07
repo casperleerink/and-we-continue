@@ -1,7 +1,7 @@
 import Token from "./token.js"
 
 class Simulate extends Token {
-    constructor(x, y, size, p, type) {
+    constructor(x, y, size, p, type, socket) {
         super(x, y, size, p, type);
         this._visible = true;
         this._velocity = {
@@ -14,11 +14,12 @@ class Simulate extends Token {
         this._followingCloseness = -0.05;
 
         //socket
-        this._socket = io();
+        this._socket = socket;
         this._socketConnected = false;
 
         //event listeners
         this._socket.on('connect', () => {
+            console.log(socket.io.engine.id);
             if (!this._socketConnected) {
                 this._socket.emit('newClient', JSON.stringify({
                     type,
