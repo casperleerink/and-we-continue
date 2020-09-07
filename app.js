@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     });
     socket.on('newClient', data => {
         const parsed = JSON.parse(data);
-        clients[socket.id] = data;
+        clients[socket.id] = parsed;
         io.emit('clients', JSON.stringify(clients));
     });
     socket.on('visible', (b) => {
