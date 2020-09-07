@@ -15,15 +15,19 @@ class Simulate extends Token {
 
         //socket
         this._socket = io();
+        this._socketConnected = false;
 
         //event listeners
         this._socket.on('connect', () => {
-            this._socket.emit('newClient', JSON.stringify({
-                type,
-                x, 
-                y,
-                visible: true
-            }));
+            if (!this._socketConnected) {
+                this._socket.emit('newClient', JSON.stringify({
+                    type,
+                    x, 
+                    y,
+                    visible: true
+                }));
+            }
+            this._socketConnected = true;
         });
     }
     get friction() {
@@ -140,8 +144,8 @@ class Simulate extends Token {
             this.moveStep(); //renew position
             super.draw(p5);
         }
-        if (this.isMoving()) {
-            this._socket.emit('updatePosition', this._pos);
+        if (this.isMoving() && this._socketConnected && p5.frameCount % 5 === 0) {
+            this._socket.emit('updatePosition', JSON.stringify(this._pos));
         }
     }
     //called inside sketch draw if following someone else

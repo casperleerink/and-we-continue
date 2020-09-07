@@ -62,14 +62,15 @@ io.on('connection', (socket) => {
         }));
     });
     socket.on('updatePosition', data => {
+        const parsed = JSON.parse(data);
         if (clients[socket.id]) {
-            clients[socket.id].x = data.x;
-            clients[socket.id].y = data.y;
+            clients[socket.id].x = parsed.x;
+            clients[socket.id].y = parsed.y;
         }
         socket.broadcast.emit('updatedPosition', JSON.stringify({
             id: socket.id,
-            x: data.x,
-            y: data.y
+            x: parsed.x,
+            y: parsed.y
         }));
     });
 
