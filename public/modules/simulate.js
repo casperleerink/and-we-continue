@@ -145,7 +145,7 @@ class Simulate extends Token {
             this.moveStep(); //renew position
             super.draw(p5);
         }
-        if (this.isMoving() && this._socketConnected && p5.frameCount % 5 === 0) {
+        if (this.isMoving() && this._socketConnected) {
             this._socket.emit('updatePosition', JSON.stringify(this._pos));
         }
     }
@@ -159,5 +159,6 @@ class Simulate extends Token {
         this._velocity.y = p5.sin(angle) * magnitude;
     }
 }
+
 
 export default Simulate;

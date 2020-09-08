@@ -6,7 +6,7 @@ class Token {
         }
         this._size = size;
         this._type = type;
-        this._color = [6, 90, 150, 255];
+        this._color = [6, 90, 150, 127];
         this._visible = false;
         if (this._type === "ICE" || this._type === "RIVER") {
             this._tilt = p.random(0.0, p.TWO_PI);
@@ -137,7 +137,7 @@ class Token {
                     p5.rotate(this._tilt);
                     p5.stroke(this._color);
                     p5.noFill();
-                    p5.strokeWeight(this._size*0.35);
+                    p5.strokeWeight(this._size*0.2);
                     p5.bezier(-this._size, -this._size, this._size, 0, -this._size, this._size, this._size, this._size);
                     p5.pop();
                     break;
