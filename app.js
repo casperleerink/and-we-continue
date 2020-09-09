@@ -74,6 +74,19 @@ io.on('connection', (socket) => {
         }));
     });
 
+    socket.on('clicked', data => {
+        socket.broadcast.emit('clicked', JSON.stringify({
+            id: socket.id,
+            x: data.x,
+            y: data.y,
+            z: data.z,
+        }));
+    });
+
+    socket.on('lastLinePart1', () => {
+        socket.broadcast.emit('lastLinePart1', socket.id);
+    });
+
     //admin only messages
     socket.on('changePart', part => {
         io.emit('part', part);

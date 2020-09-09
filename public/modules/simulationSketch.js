@@ -35,30 +35,67 @@ export const sketch = (p) => {
 
         //mouse click on canvas event
         cnv.mousePressed(() => {
-            //change what to do based on part
+            const relMouse = {
+                x: p.mouseX/p.width,
+                y: p.mouseY/p.height,
+            }
+            me.following = {
+                pos: {
+                    x: relMouse.x,
+                    y: relMouse.y,
+                }
+            }
+            me.onClick(relMouse.x, relMouse.y, p, () => {
+                if (part === 1) {
+                    const storyEnded = story.nextLine();
+                    if (storyEnded) {
+                        me.socket.emit('lastLinePart1');
+                    }
+                }
+            });
+
             if (part === 1) {
-                me.attractionPoint(0.03, p.mouseX/p.width, p.mouseY/p.height, p);
-                me.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
-                    story.nextLine();
-                });
-            } else if (part === 2) {
-                simulations.forEach((s, index) => {
-                    if (s.type === me.type && simulationIndex !== index) {
-                        s.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
-                            me.following = s;
-                        });
-                    }
-                });
-            } else if (part === 3) {
-                simulations.forEach((s, index) => {
-                    if (s.type !== me.type && simulationIndex !== index) {
-                        s.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
-                            me.following = s;
-                            me.followingCloseness = p.random(-0.10, -0.02);
-                        });
-                    }
+                me.socket.emit('clicked', {
+                    x: relMouse.x,
+                    y: relMouse.y,
+                    z: 1.0,
                 });
             }
+            if (part === 2) {
+                let totalDist = 0;
+                let typeAmount = 0;
+                simulations.forEach((s, index) => {
+                    if (s.type === me.type && simulationIndex !== index) {
+                        typeAmount++;
+                        totalDist += p.dist(relMouse.x, relMouse.y, s.pos.x, s.pos.y);
+                    }
+                });
+                if (typeAmount > 0) {
+                    me.socket.emit('clicked', {
+                        x: relMouse.x,
+                        y: relMouse.y,
+                        z: totalDist/typeAmount,
+                    });
+                }
+            }
+            // else if (part === 2) {
+            //     simulations.forEach((s, index) => {
+            //         if (s.type === me.type && simulationIndex !== index) {
+            //             s.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+            //                 me.following = s;
+            //             });
+            //         }
+            //     });
+            // } else if (part === 3) {
+            //     simulations.forEach((s, index) => {
+            //         if (s.type !== me.type && simulationIndex !== index) {
+            //             s.onClick(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+            //                 me.following = s;
+            //                 me.followingCloseness = p.random(-0.10, -0.02);
+            //             });
+            //         }
+            //     });
+            // }
         });
 
 
@@ -146,7 +183,14 @@ const helpText = (p, part, timeStamp) => {
                 p.push();
                 p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
                 p.textSize(20);
-                p.text("CLICK anywhere to explore", 0.5*p.width, 0.5*p.height);
+                p.text("Guide your blue dot by clicking on the screen", 0.5*p.width, 0.5*p.height);
+                p.pop();
+            }
+            if ( timeDiff > 6000 && timeDiff < 13000) {
+                p.push();
+                p.fill(0, 0, 0, (1 - ((timeDiff-6000) / 7000)) * 255);
+                p.textSize(20);
+                p.text("Click on it to go through the story", 0.5*p.width, 0.6*p.height);
                 p.pop();
             }
             break;
@@ -155,7 +199,7 @@ const helpText = (p, part, timeStamp) => {
                 p.push();
                 p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
                 p.textSize(20);
-                p.text("FIND and click on others who are like you.", 0.5*p.width, 0.5*p.height);
+                p.text("Approach others who are like you to explore even more", 0.5*p.width, 0.5*p.height);
                 p.pop();
             }
             break;

@@ -11,7 +11,7 @@ class Simulate extends Token {
         this._friction = 0.05; //0 = no friction 1=full friction (immediate stop)
         this._isActive = false;
         this._following = undefined;
-        this._followingCloseness = -0.05;
+        this._followingCloseness = 0.0;
 
         //socket
         this._socket = socket;
@@ -48,7 +48,7 @@ class Simulate extends Token {
     }
     set isActive(b) {
         this._isActive = b;
-        this._color[1] = b ? 200 : 90;
+        this._color[1] = b ? 150 : 90;
         this._size = b ? 8 : 5;
     }
 
@@ -68,6 +68,9 @@ class Simulate extends Token {
         } else {
             console.error('following closeness should be a number between -1 and 0');
         }
+    }
+    get socket() {
+        return this._socket;
     }
     get velocity() {
         return this._velocity;
@@ -145,9 +148,9 @@ class Simulate extends Token {
             this.moveStep(); //renew position
             super.draw(p5);
         }
-        if (this.isMoving() && this._socketConnected) {
-            this._socket.emit('updatePosition', JSON.stringify(this._pos));
-        }
+        // if (this.isMoving() && this._socketConnected) {
+        //     this._socket.emit('updatePosition', JSON.stringify(this._pos));
+        // }
     }
     //called inside sketch draw if following someone else
     follow(p5, x, y) {
@@ -158,6 +161,13 @@ class Simulate extends Token {
         this._velocity.x = p5.cos(angle) * magnitude * p5.random(0.9, 1);
         this._velocity.y = p5.sin(angle) * magnitude;
     }
+
+    // onClick(x, y, p5, callback) {
+    //     super.onClick(x, y, p5, callback);
+    //     this._socket.emit('clicked', JSON.stringify({
+    //         x, y
+    //     }));
+    // }
 }
 
 
