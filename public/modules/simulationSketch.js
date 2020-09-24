@@ -14,6 +14,7 @@ export const sketch = (p) => {
     let story;
     //implement object with userID as keys and token as values
     const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
+    const typeAmount = [0, 0, 0, 0 ,0, 0];
     const others = {};
 
 
@@ -101,11 +102,16 @@ export const sketch = (p) => {
 
         // ---SETUP SIMULATIONS TEST ONLY---
         for (let i = 0; i < 40; i++) {
-            const socket = io({transports: ['websocket']});
-            simulations.push(new Simulate(Math.random(), Math.random(), 5, p, p.random(types), socket));
+            const socket = io({transports: ['websocket']}); //create socket for each sim
+            //create types evenly by choosing type that has the least amount so far.
+            const typeIndex = typeAmount.indexOf(Math.min(...typeAmount));
+            const type = types[typeIndex];
+            simulations.push(new Simulate(Math.random(), Math.random(), 5, p, type, socket));
+            typeAmount[typeIndex]++;
         }
         me = simulations[simulationIndex];
         me.isActive = true;
+        me.visible = true;
         story = new Story(me.type);
     }
 
@@ -119,8 +125,11 @@ export const sketch = (p) => {
                 simulationIndex--;
             }
             me.isActive = false;
+            me.visible = part === 1 ? false : true;
             me = simulations[simulationIndex];
             me.isActive = true;
+            me.visible = true;
+            story.type = me.type;
         } else if (p.keyCode === p.RIGHT_ARROW) {
             if (simulationIndex === simulations.length-1) {
                 simulationIndex = 0;
@@ -128,13 +137,21 @@ export const sketch = (p) => {
                 simulationIndex++;
             }
             me.isActive = false;
+            me.visible = part === 1 ? false : true;
             me = simulations[simulationIndex];
             me.isActive = true;
+            me.visible = true;
+            story.type = me.type;
         } else if (p.keyCode === p.UP_ARROW) {
             if (part === 5) {
                 part = 1;
             } else {
                 part++;
+            }
+            if (part === 2) {
+                simulations.forEach(s => {
+                    s.visible = true;
+                });
             }
             console.log(part);
         }

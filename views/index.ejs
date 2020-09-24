@@ -38,17 +38,35 @@
                 <br>
                 <p>
                     In this interactive presentation you will be able to explore the characteristics of water. 
-                    While you start out as an individual avatar, throughout the presentation you will see other participants appear, later you will be able to interact with them by moving your avatar around. Together you will explore attraction, influences, chaos and ultimately equifinality(have a pop up screen with definition).
+                    While you start out as an individual avatar, throughout the presentation you will see other participants appear, later you will be able to interact with them by moving your avatar around. 
+                    Together you will explore attraction, influences, chaos and ultimately 
+                    <span class='equifinality' onmouseover="showPopup()" onmouseout="hidePopup()">equifinality
+                        <span class="popup-equi" id="popupEqui">
+                            Equifinality is the principle that in open systems a given end state can be reached by many potential means. 
+                            <br>
+                            Also meaning that a goal can be reached by many ways.
+                        </span>
+                    </span>.
                 </p>
                 <p>Make sure to use an up to date browser and large screen (laptop or desktop) to experience <i>and we continue</i>.</p>
-                <button id="startButton">Start (y)our journey</button>
+                <button id="startButton">Enter the waiting room</button>
 
-                <!-- <img src="arctic-08.jpg" alt="arctic landscape"> -->
                 <div class="extra-padding"></div>
             </div>
         </div>
         
     </div>
     <script src="featureCheck.js"></script>
+    <script>
+        // When the user clicks on <div>, open the popup
+        function showPopup() {
+          var popup = document.getElementById("popupEqui");
+          popup.classList.add("show");
+        }
+        function hidePopup() {
+          var popup = document.getElementById("popupEqui");
+          popup.classList.remove("show");
+        }
+    </script>
 </body>
 </html>

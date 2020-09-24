@@ -3,7 +3,7 @@ import Token from "./token.js"
 class Simulate extends Token {
     constructor(x, y, size, p, type, socket) {
         super(x, y, size, p, type);
-        this._visible = true;
+        // this._visible = true;
         this._velocity = {
             x: 0.0,
             y: 0.0,
@@ -21,12 +21,13 @@ class Simulate extends Token {
         this._socket.on('connect', () => {
             console.log(socket.io.engine.id);
             if (!this._socketConnected) {
-                this._socket.emit('newClient', JSON.stringify({
+                this._socket.emit('newClient', {
                     type,
                     x, 
                     y,
+                    z: 0.02,
                     visible: true
-                }));
+                });
             }
             this._socketConnected = true;
         });
@@ -144,10 +145,8 @@ class Simulate extends Token {
 
     //This method should be called inside p5 draw function
     draw(p5) {
-        if (this._visible) {
-            this.moveStep(); //renew position
-            super.draw(p5);
-        }
+        this.moveStep(); //renew position
+        super.draw(p5);
         // if (this.isMoving() && this._socketConnected) {
         //     this._socket.emit('updatePosition', JSON.stringify(this._pos));
         // }

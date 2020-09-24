@@ -1,24 +1,18 @@
 import Token from "./token.js"
 
 class Me extends Token {
-    constructor(x, y, size, p, type) {
+    constructor(x, y, size, p, type, socket) {
         super(x, y, size, p, type);
         this._velocity = {
             x: 0.0,
             y: 0.0,
         }
         this._visible = true;
-        this._friction = 0.05; //0 = no friction 1=full friction (immediate stop)
+        this._friction = 0.0; //0 = no friction 1=full friction (immediate stop)
         this._color[1] = 150;
+        this._following = undefined;
+        this._socket = socket;
     }
-
-    // get visibleToOthers() {
-    //     return this._visibleToOthers;
-    // }
-
-    // set visibleToOthers(b) {
-    //     this._visibleToOthers = b;
-    // }
 
     get friction() {
         return this._friction;
@@ -31,27 +25,30 @@ class Me extends Token {
             console.error("Friction should be a number between 0. and 1.")
         }
     }
-
+    get socket() {
+        return this._socket;
+    }
+    get following() {
+        return this._following;
+    }
+    set following(other) {
+        this._following = other;
+    }
     get velocity() {
         return this._velocity;
     }
-    /**
-     * Sets velocity directly.
-     * @method setVelocity
-     * @param {Number}  x value between 0 and 1
-     * @param {Number}  y value between 0 and 1
-     */
-    setVelocity(x, y) {
-        if (x > 0.0 && x < 1.0) {
+    set velocityX(x) {
+        if (x >= -1.0 && x <= 1.0) {
             this._velocity.x = x;
         } else {
-            console.error('y has to be a number between 0. and 1.')
+            console.error('x has to be a number between -1. and 1.')
         }
-        if (y > 0.0 && y < 1.0) {
+    }
+    set velocityY(y) {
+        if (y >= -1.0 && y <= 1.0) {
             this._velocity.y = y;
-        }
-        else {
-            console.error('x has to be a number between 0. and 1.')
+        } else {
+            console.error('y has to be a number between -1. and 1.')
         }
     }
 
@@ -87,12 +84,12 @@ class Me extends Token {
         this._velocity.x *= 1.0-this._friction;
         this._velocity.y *= 1.0-this._friction;
         this.borderCheck();
-        if (this._velocity.x > -0.0001 && this._velocity.x < 0.0001) {
-            this._velocity.x = 0.0;
-        }
-        if (this._velocity.y > -0.0001 && this._velocity.y < 0.0001) {
-            this._velocity.y = 0.0;
-        }
+        // if (this._velocity.x > -0.0001 && this._velocity.x < 0.0001) {
+        //     this._velocity.x = 0.0;
+        // }
+        // if (this._velocity.y > -0.0001 && this._velocity.y < 0.0001) {
+        //     this._velocity.y = 0.0;
+        // }
     }
     borderCheck() {
         if (this._pos.x > 1.0 || this._pos.x < 0.0) {
@@ -105,18 +102,18 @@ class Me extends Token {
 
     //This method should be called inside p5 draw function
     draw(p5) {
-        if (this._visible) {
-            this.moveStep(); //renew position
-            super.draw(p5);
-        }
+        this.moveStep(); //renew position
+        super.draw(p5);
     }
     //called inside sketch draw if following someone else
-    follow(p5, x, y, closeness) {
-        const d = p5.dist(this._pos.x, this._pos.y, x, y);
-        const angle = p5.atan2(y-this._pos.y, x-this._pos.x);
-        const magnitude = p5.map(d, 0.0, 1.0, closeness, 1.0) * 0.03;
-        this._velocity.x = p5.cos(angle) * magnitude * p5.random(0.9, 1);
-        this._velocity.y = p5.sin(angle) * magnitude;
+    follow(p5) {
+        if (this._following) {
+            const d = p5.dist(this._pos.x, this._pos.y, this._following.pos.x, this._following.pos.y);
+            const angle = p5.atan2(this._following.pos.y-this._pos.y, this._following.pos.x-this._pos.x);
+            const magnitude = d * 0.03;
+            this._velocity.x = p5.cos(angle) * magnitude * p5.random(0.8, 1.2);
+            this._velocity.y = p5.sin(angle) * magnitude;
+        }
     }
 }
 

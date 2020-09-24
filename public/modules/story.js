@@ -11,9 +11,25 @@ class Story {
             "AQUIFER": "My time feels long here, longer than you.",
         }
         this._index = 0;
+        this._currentLine;
+    }
+    get type() {
+        return this._type;
+    }
+    set type(t) {
+        this._type = t;
+        this._text1 = getBeginText(this._type);
+        this._index = 0;
     }
     get line() {
         return this._text1[this._index];
+    }
+
+    get currentLine() {
+        return this._currentLine;
+    }
+    set currentLine(l) {
+        this._currentLine = l;
     }
 
     text1EndLine(type) {
@@ -22,9 +38,12 @@ class Story {
     nextLine() {
         if (this._index === this._text1.length-1) {
             return true;
+        } else if (this._index === this._text1.length-2) {
+            this._index++;
+            return true;
         } else {
             this._index++;
-            return false
+            return false;
         }
     }
 

@@ -60,8 +60,7 @@ body {
     /* overflow: hidden; */
     overflow-y: scroll;
     width: 100vw;
-    max-height: 56.25vw;
-    min-height: 56.25vw;
+    height: 56.25vw;
     background-color: black;
 }
 @media (min-aspect-ratio: 16/9) {
@@ -96,7 +95,7 @@ body {
 
 /* Welcome page styling */
 .welcome-container {
-    padding: 1rem;
+    padding: 2rem;
     width: 100%;
     /* min-height: 100%; */
 }
@@ -129,3 +128,58 @@ body {
 img {
     width: 100%;
 }
+
+#startButton {
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.equifinality {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.equifinality .popup-equi {
+    visibility: hidden;
+    width: 200px;
+    font-size: 0.8rem;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 0.5rem;
+    position: absolute;
+    z-index: 2;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+}
+/* Popup arrow */
+.equifinality .popup-equi::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.equifinality .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }

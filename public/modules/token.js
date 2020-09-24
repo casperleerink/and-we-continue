@@ -8,19 +8,19 @@ class Token {
         this._type = type;
         this._color = [6, 90, 150, 190];
         this._visible = false;
-        if (this._type === "ICE" || this._type === "RIVER") {
-            this._tilt = p.random(0.0, p.TWO_PI);
-        }
-        if (this._type === "CLOUD") {
-            this._colors = [];
-            this._positions = [];
-            for (let i = 0; i < 5; i++) {
-                this._colors.push(p.random(0.2, 0.7));
-                this._positions.push({
-                    x: p.random(-1, 1),
-                    y: p.random(-1, 1),
-                });
-            }
+
+        //for ice and river only
+        this._tilt = p.random(0.0, p.TWO_PI);
+
+        //for cloud only
+        this._colors = [];
+        this._positions = [];
+        for (let i = 0; i < 5; i++) {
+            this._colors.push(p.random(0.2, 0.7));
+            this._positions.push({
+                x: p.random(-1, 1),
+                y: p.random(-1, 1),
+            });
         }
     }
     get pos() {
@@ -190,19 +190,21 @@ class Token {
      * @param {Number}  y coordinate
      */
     onHover(x, y, p5, story, part) {
-        if (this.isWithinBox(x, y, p5)) {
-            this._size = p5.sin(p5.frameCount * 0.06) * 1.5 + 5;
-            p5.push();
-            p5.noStroke();
-            p5.fill(this._color);
-            if (part === 1) {
-                p5.text(story.line, this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
-            }
-            if (part === 2) {
-                p5.text(story.text1EndLine(this._type), this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
-            }
-            p5.pop();
-        } 
+        if (this._visible) {
+            if (this.isWithinBox(x, y, p5)) {
+                this._size = p5.sin(p5.frameCount * 0.06) * 1.5 + 5;
+                p5.push();
+                p5.noStroke();
+                p5.fill(this._color);
+                if (part === 1) {
+                    p5.text(story.line, this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
+                }
+                if (part === 2) {
+                    p5.text(story.text1EndLine(this._type), this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
+                }
+                p5.pop();
+            } 
+        }
     }
 
     onClick(x, y, p5, callback) {

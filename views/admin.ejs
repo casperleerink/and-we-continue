@@ -1,1 +1,24 @@
-<h1>Hi <%=name%></h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="admin-test.js" defer></script>
+</head>
+<body>
+    <button id="start">Start!</button>
+
+    <label for="part">Part (between 1 and 5):</label>
+    <input type="number" id="part" name="part" min="1" max="5">
+    <input type="submit" id="partSubmit">
+
+    <label for="heat">Heat (between 0 and 1):</label>
+    <input type="number" id="heat" name="heat" min="0.0" max="1.0" step="0.001">
+
+    <label for="gravity">Gravity (between 0 and 1):</label>
+    <input type="number" id="gravity" name="gravity" min="0.0" max="1.0" step="0.001">
+
+</body>
+</html>
