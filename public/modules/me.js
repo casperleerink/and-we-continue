@@ -52,6 +52,17 @@ class Me extends Token {
         }
     }
 
+    get type() {
+        return super.type;
+    }
+
+    set type(t) {
+        if (t !== this._type) {
+            super.type = t;
+            this._socket.emit('newType', t);
+        }
+    }
+
     isMoving() {
         if (this._velocity.x === 0.0 && this._velocity.y === 0.0) {
             return false;

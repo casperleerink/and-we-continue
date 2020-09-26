@@ -12,6 +12,9 @@ export const sketch = (p) => {
     let part = 1;
     let timeSincePart = 0.0;
     let timeLastClicked = -5001;
+    let timeSinceLastClicked = 0;
+    let minimumTimeBetweenClicks = 2000;
+    const clickedTimeStamps = [];
     let cnv;
     let me;
     let story;
@@ -39,11 +42,11 @@ export const sketch = (p) => {
 
         //mouse click on canvas event
         cnv.mousePressed(() => {
-            const timeSinceLastClicked = p.millis() - timeLastClicked;
-            if (timeSinceLastClicked > 1000) {
-                console.log("click!");
+            if (timeSinceLastClicked > minimumTimeBetweenClicks) {
                 timeLastClicked = p.millis();
-
+                if (part > 2) {
+                    clickedTimeStamps.push(timeLastClicked);
+                }
                 
                 const relMouse = {
                     x: p.mouseX/p.width,
@@ -83,6 +86,7 @@ export const sketch = (p) => {
                         const current = others.get(id);
                         current.pos = { x: client.x, y: client.y};
                         current.visible = client.visible;
+                        current.type = client.type;
                     } 
                     //else create a new token
                     else {
@@ -100,7 +104,7 @@ export const sketch = (p) => {
                 part = data.part;
                 console.log(`Part: ${part}`);
             }
-            timeSincePart = data.timeSincePart;
+            timeSincePart = data.timeSincePart * 1000; //convert to ms;
             if (data.storyLine !== story.currentLine) {
                 story.currentLine = data.storyLine;
                 //maybe do something only when the text changes?
@@ -131,6 +135,10 @@ export const sketch = (p) => {
         p.background(0, 0);
         p.noStroke();
         helpText(p, part, timeSincePart);
+        const currentTime = p.millis();
+        timeSinceLastClicked = currentTime - timeLastClicked;
+
+        //ME!!///
         if (me) {
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
@@ -139,13 +147,67 @@ export const sketch = (p) => {
                 centerEffect(me, toCenter, p);
             }
             me.draw(p);
-            me.onHover(p.mouseX/p.width, p.mouseY/p.height, p, story, part);
+            me.onHover(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+                if (part === 1) {
+                    me.localText(p, story.line, 1);
+                } else if (part === 2) {
+                    me.localText(p, story.text1EndLine(me.type), 1);
+                } else if (part === 3) {
+                    me.localText(p, story.currentLine, 1);
+                }
+            });
+            if (part === 1 && timeSinceLastClicked < minimumTimeBetweenClicks) {
+                me.localText(p, story.line, 1- (timeSinceLastClicked/minimumTimeBetweenClicks));
+            }
             updatePosition(me, others, part);
         }
+
+        //OTHERS!!///
         others.forEach((token) => {
             token.draw(p);
-            token.onHover(p.mouseX/p.width, p.mouseY/p.height, p, story, part);
+            token.onHover(p.mouseX/p.width, p.mouseY/p.height, p, () => {
+                if (part <= 2) {
+                    token.localText(p, story.text1EndLine(token.type), 1);
+                } else if (part === 3) {
+                    token.localText(p, story.currentLine, 1);
+                }
+            });
         });
 
+        if (part === 4) {
+            //Show text story.currentLine
+            p.push();
+            p.noStroke();
+            p.fill(0);
+            p.textSize(18);
+            p.text(story.currentLine, p.width*0.5, p.height*0.5);
+            p.pop();
+        }
+
+        //click density of user (use from part 3 onwards?)
+        let amtClicked = 0.0;
+        if (clickedTimeStamps.length > 0) {
+            for (let i = clickedTimeStamps.length-1; i >= 0; i--) {
+                const timeDiff = currentTime - clickedTimeStamps[i];
+                if (timeDiff < minimumTimeBetweenClicks*20) {
+                    amtClicked += 1/20;
+                } else {
+                    break;
+                }
+            }
+            if (amtClicked < 0.1) {
+                me.type = "OCEAN";
+            } else if (amtClicked >= 0.1 && amtClicked < 0.2) {
+                me.type = "ICE";
+            } else if (amtClicked >= 0.2 && amtClicked < 0.3) {
+                me.type = "AQUIFER";
+            } else if (amtClicked >= 0.3 && amtClicked < 0.45) {
+                me.type = "RIVER";
+            } else if (amtClicked >= 0.45 && amtClicked < 0.6) {
+                me.type = "CLOUD";
+            } else if (amtClicked >= 0.6) {
+                me.type = "PRECIPITATION";
+            }
+        }
     }
 };

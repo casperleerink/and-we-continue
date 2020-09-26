@@ -86,6 +86,12 @@ io.on('connection', (socket) => {
             }
         }
     });
+    socket.on('newType', t => {
+        if (gameState.clients.has(socket.id)) {
+            const client = gameState.clients.get(socket.id);
+            client.type = t;
+        }
+    });
     socket.on('clicked', data => {
        if (adminID) {
            io.to(adminID).emit("clicked", data);
@@ -104,7 +110,7 @@ io.on('connection', (socket) => {
         if (socket.id === adminID && !started) {
             started = true;
             io.emit('start');
-            const frameRate = 1;
+            const frameRate = 10;
             emitGameStateInterval = setInterval(() => {
                 gameState.timeSincePart += 1/frameRate;
                 const clientsArr = Array.from(gameState.clients);

@@ -52,7 +52,9 @@ class Token {
         return this._type;
     }
     set type(t) {
-        this._type = t;
+        if (t !== this._type) {
+            this._type = t;
+        }
     }
     get color() {
         return this._color;
@@ -189,20 +191,13 @@ class Token {
      * @param {Number}  x coordinate
      * @param {Number}  y coordinate
      */
-    onHover(x, y, p5, story, part) {
+    onHover(x, y, p5, callback) {
         if (this._visible) {
             if (this.isWithinBox(x, y, p5)) {
                 this._size = p5.sin(p5.frameCount * 0.06) * 1.5 + 5;
-                p5.push();
-                p5.noStroke();
-                p5.fill(this._color);
-                if (part === 1) {
-                    p5.text(story.line, this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
+                if (typeof callback === 'function') {
+                    callback();
                 }
-                if (part === 2) {
-                    p5.text(story.text1EndLine(this._type), this._pos.x*p5.width, this._pos.y*p5.height-this._size-10);
-                }
-                p5.pop();
             } 
         }
     }
@@ -213,6 +208,16 @@ class Token {
                 callback();
             }
         }
+    }
+
+    localText(p, text, fade) {
+        p.push();
+        p.noStroke();
+        const color = [...this._color];
+        color[3] *= fade;
+        p.fill(color);
+        p.text(text, this._pos.x*p.width, this._pos.y*p.height-this._size-10);
+        p.pop();
     }
 }
 

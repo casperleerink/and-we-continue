@@ -32,7 +32,7 @@ export const heatEffect = (me, others, amount, p) => {
         const dist = p.dist(me.pos.x, me.pos.y, token.pos.x, token.pos.y);
         if (dist < amount) {
             const angle = p.atan2(token.pos.y-me.pos.y, token.pos.x-me.pos.x);
-            const magnitude = (0.1 * amount) / dist;
+            const magnitude = (0.0005 * amount) / dist;
             me.velocity.x -= (p.cos(angle) * magnitude);
             me.velocity.y -= (p.sin(angle) * magnitude);
         }
@@ -58,14 +58,14 @@ export const helpText = (p, part, timeDiff) => {
             if (timeDiff < 8000) {
                 p.push();
                 p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
-                p.textSize(20);
+                p.textSize(18);
                 p.text("Guide your blue dot by clicking on the screen", 0.5*p.width, 0.5*p.height);
                 p.pop();
             }
             if ( timeDiff > 6000 && timeDiff < 13000) {
                 p.push();
                 p.fill(0, 0, 0, (1 - ((timeDiff-6000) / 7000)) * 255);
-                p.textSize(20);
+                p.textSize(18);
                 p.text("Click on it to go through the story", 0.5*p.width, 0.6*p.height);
                 p.pop();
             }
@@ -74,7 +74,7 @@ export const helpText = (p, part, timeDiff) => {
             if (timeDiff < 8000) {
                 p.push();
                 p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
-                p.textSize(20);
+                p.textSize(18);
                 p.text("Approach others", 0.5*p.width, 0.5*p.height);
                 p.pop();
             }
