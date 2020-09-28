@@ -216,6 +216,7 @@ class Token {
         const color = [...this._color];
         color[3] *= fade;
         p.fill(color);
+        p.textSize(18);
         p.text(text, this._pos.x*p.width, this._pos.y*p.height-this._size-10);
         p.pop();
     }

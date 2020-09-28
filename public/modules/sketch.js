@@ -34,7 +34,7 @@ export const sketch = (p) => {
 
         //set up canvas standards
         p.frameRate(30); //draw is called around 30 times/second
-        p.textSize(14);
+        p.textSize(18);
         p.rectMode(p.CENTER);
         p.imageMode(p.CENTER);
         p.textAlign(p.CENTER);
@@ -44,6 +44,12 @@ export const sketch = (p) => {
         cnv.mousePressed(() => {
             if (timeSinceLastClicked > minimumTimeBetweenClicks) {
                 timeLastClicked = p.millis();
+                if (part === 1) {
+                    const storyEnded = story.nextLine();
+                    if (storyEnded) {
+                        me.socket.emit('visible', true);
+                    }
+                }
                 if (part > 2) {
                     clickedTimeStamps.push(timeLastClicked);
                 }
@@ -59,14 +65,11 @@ export const sketch = (p) => {
                         y: relMouse.y,
                     }
                 }
-                me.onClick(relMouse.x, relMouse.y, p, () => {
-                    if (part === 1) {
-                        const storyEnded = story.nextLine();
-                        if (storyEnded) {
-                            me.socket.emit('visible', true);
-                        }
-                    }
-                });
+                // me.onClick(relMouse.x, relMouse.y, p, () => {
+                //     if (part === 1) {
+                        
+                //     }
+                // });
             }
         });
 
@@ -105,13 +108,19 @@ export const sketch = (p) => {
                 console.log(`Part: ${part}`);
             }
             timeSincePart = data.timeSincePart * 1000; //convert to ms;
+
+            //only do stuff when line changes
             if (data.storyLine !== story.currentLine) {
                 story.currentLine = data.storyLine;
-                //maybe do something only when the text changes?
+                story.timeLineChanged = p.millis();
+                if (part === 5) {
+                    story.part5Array.push(story.currentLine);
+                }
             }
             heat = data.heat;
             gravity = data.gravity;
             toCenter = data.center;
+            minimumTimeBetweenClicks = data.timeBetweenClicks;
 
         });
         //when client leaves clean up data event
@@ -159,6 +168,13 @@ export const sketch = (p) => {
             if (part === 1 && timeSinceLastClicked < minimumTimeBetweenClicks) {
                 me.localText(p, story.line, 1- (timeSinceLastClicked/minimumTimeBetweenClicks));
             }
+            if (part === 3) {
+                const diff = p.millis() - story.timeLineChanged;
+                if (diff < 5000) {
+                    me.localText(p, story.currentLine, 1 - (diff/5000));
+                }
+            }
+            me.calcClickDensity(clickedTimeStamps, currentTime, minimumTimeBetweenClicks);
             updatePosition(me, others, part);
         }
 
@@ -174,40 +190,14 @@ export const sketch = (p) => {
             });
         });
 
-        if (part === 4) {
-            //Show text story.currentLine
-            p.push();
-            p.noStroke();
-            p.fill(0);
-            p.textSize(18);
-            p.text(story.currentLine, p.width*0.5, p.height*0.5);
-            p.pop();
-        }
 
-        //click density of user (use from part 3 onwards?)
-        let amtClicked = 0.0;
-        if (clickedTimeStamps.length > 0) {
-            for (let i = clickedTimeStamps.length-1; i >= 0; i--) {
-                const timeDiff = currentTime - clickedTimeStamps[i];
-                if (timeDiff < minimumTimeBetweenClicks*20) {
-                    amtClicked += 1/20;
-                } else {
-                    break;
-                }
-            }
-            if (amtClicked < 0.1) {
-                me.type = "OCEAN";
-            } else if (amtClicked >= 0.1 && amtClicked < 0.2) {
-                me.type = "ICE";
-            } else if (amtClicked >= 0.2 && amtClicked < 0.3) {
-                me.type = "AQUIFER";
-            } else if (amtClicked >= 0.3 && amtClicked < 0.45) {
-                me.type = "RIVER";
-            } else if (amtClicked >= 0.45 && amtClicked < 0.6) {
-                me.type = "CLOUD";
-            } else if (amtClicked >= 0.6) {
-                me.type = "PRECIPITATION";
-            }
+        //General text
+        if (part === 4) {
+            // const diff = p.millis() - story.timeLineChanged;
+            // if (diff < 5000) {
+            //     story.part4Text(p, 1 - (diff/5000));
+            // }
+            story.part4Text(p, 1);
         }
     }
 };

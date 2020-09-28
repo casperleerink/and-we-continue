@@ -17,12 +17,18 @@ const mse = (me, others, part) => {
 
 export const updatePosition = (me, others, part) => {
     if (part === 1) {
-        me.socket.emit('updatePosition', me.pos);
+        me.socket.emit('updatePosition', {
+            x: me.pos.x,
+            y: me.pos.y,
+            z: 1,
+            c: me.clickDensity,
+        });
     } else {
         me.socket.emit('updatePosition', {
             x: me.pos.x,
             y: me.pos.y,
             z: mse(me, others, part),
+            c: me.clickDensity,
         });
     }
 }
@@ -60,13 +66,6 @@ export const helpText = (p, part, timeDiff) => {
                 p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
                 p.textSize(18);
                 p.text("Guide your blue dot by clicking on the screen", 0.5*p.width, 0.5*p.height);
-                p.pop();
-            }
-            if ( timeDiff > 6000 && timeDiff < 13000) {
-                p.push();
-                p.fill(0, 0, 0, (1 - ((timeDiff-6000) / 7000)) * 255);
-                p.textSize(18);
-                p.text("Click on it to go through the story", 0.5*p.width, 0.6*p.height);
                 p.pop();
             }
             break;

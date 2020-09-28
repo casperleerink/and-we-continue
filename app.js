@@ -39,6 +39,7 @@ const gameState = {
     gravity: 0.0,
     heat: 0.0,
     center: 0.0,
+    timeBetweenClicks: 10000,
 }
 const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
 let adminID;
@@ -64,6 +65,7 @@ io.on('connection', (socket) => {
             x: Math.random(),
             y: Math.random(),
             z: 1.0,
+            c: 0.0,
             visible: false,
         }
         gameState.clients.set(socket.id, client);
@@ -81,9 +83,8 @@ io.on('connection', (socket) => {
             const client = gameState.clients.get(socket.id);
             client.x = data.x;
             client.y = data.y;
-            if (data.z) {
-                client.z = data.z;
-            }
+            client.z = data.z;
+            client.c = data.c;
         }
     });
     socket.on('newType', t => {
@@ -154,5 +155,8 @@ io.on('connection', (socket) => {
     socket.on('storyLine', line => {
         //takes effect in part 3 only
         gameState.storyLine = line;
+    });
+    socket.on('timeBetweenClicks', i => {
+        gameState.timeBetweenClicks = i;
     });
 });

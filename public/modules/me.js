@@ -12,6 +12,7 @@ class Me extends Token {
         this._color[1] = 150;
         this._following = undefined;
         this._socket = socket;
+        this._clickDensity = 0.0;
     }
 
     get friction() {
@@ -61,6 +62,12 @@ class Me extends Token {
             super.type = t;
             this._socket.emit('newType', t);
         }
+    }
+    get clickDensity() {
+        return this._clickDensity;
+    }
+    set clickDensity(f) {
+        this._clickDensity = f;
     }
 
     isMoving() {
@@ -124,6 +131,35 @@ class Me extends Token {
             const magnitude = d * 0.03;
             this._velocity.x = p5.cos(angle) * magnitude * p5.random(0.8, 1.2);
             this._velocity.y = p5.sin(angle) * magnitude;
+        }
+    }
+
+    calcClickDensity(clickedTimeStamps, currentTime, minimumTimeBetweenClicks) {
+        //click density of user (use from part 3 onwards?)
+        let amtClicked = 0.0;
+        if (clickedTimeStamps.length > 0) {
+            for (let i = clickedTimeStamps.length-1; i >= 0; i--) {
+                const timeDiff = currentTime - clickedTimeStamps[i];
+                if (timeDiff < minimumTimeBetweenClicks*15) {
+                    amtClicked += 1/15;
+                } else {
+                    break;
+                }
+            }
+            this._clickDensity = amtClicked;
+            if (amtClicked < 0.1) {
+                this._type = "OCEAN";
+            } else if (amtClicked >= 0.1 && amtClicked < 0.2) {
+                this._type = "ICE";
+            } else if (amtClicked >= 0.2 && amtClicked < 0.3) {
+                this._type = "AQUIFER";
+            } else if (amtClicked >= 0.3 && amtClicked < 0.45) {
+                this._type = "RIVER";
+            } else if (amtClicked >= 0.45 && amtClicked < 0.6) {
+                this._type = "CLOUD";
+            } else if (amtClicked >= 0.6) {
+                this._type = "PRECIPITATION";
+            }
         }
     }
 }

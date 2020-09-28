@@ -1,4 +1,3 @@
-// import {socket, sketch} from './modules/sketch.js'
 import {sketch, socket} from './modules/sketch.js'
 import Stream from './modules/stream.js'
 import fullScreenButton from './modules/fullscreen.js'

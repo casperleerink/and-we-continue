@@ -10,8 +10,10 @@ class Story {
             "OCEAN": "My time feels longer here, longer than you.",
             "AQUIFER": "My time feels long here, longer than you.",
         }
-        this._index = 0;
+        this._index = -1;
         this._currentLine;
+        this._timeLineChanged = 0.0;
+        this._textArray5 = [];
     }
     get type() {
         return this._type;
@@ -32,6 +34,17 @@ class Story {
         this._currentLine = l;
     }
 
+    get timeLineChanged() {
+        return this._timeLineChanged;
+    }
+    set timeLineChanged(i) {
+        this._timeLineChanged = i;
+    }
+
+    get textArray5() {
+        return this._textArray5;
+    }
+
     text1EndLine(type) {
         return this._text1End[type];
     }
@@ -49,6 +62,29 @@ class Story {
 
     draw(p5) {
         p5.text(this._text1[this._index], 0, 0);
+    }
+
+    part4Text(p, fade) {
+        //Show text story.currentLine
+        p.push();
+        p.noStroke();
+        p.fill(0, 0, 0, fade * 255);
+        const textSize = 18 * (p.sin(p.frameCount * 0.03) * 0.2 + 1);
+        p.textSize(textSize);
+        p.text(this._currentLine, p.width*0.5, p.height*0.5);
+        p.pop();
+    }
+
+    part5Text(p) {
+        p.push();
+        p.noStroke();
+        p.fill(0);
+        p.textSize(p.width* 0.001);
+        //for each line in part 5 add it to a loop
+        this._textArray5.forEach(l => {
+            p.text(l, p.random() * p.width, p.random() * p.height); //change this to set positions
+        });
+        p.pop();
     }
 }
 

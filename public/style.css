@@ -138,6 +138,7 @@ img {
     position: relative;
     display: inline-block;
     cursor: pointer;
+    color: rgb(33, 201, 252);
 }
 
 .equifinality .popup-equi {
