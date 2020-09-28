@@ -49,13 +49,13 @@ let emitGameStateInterval;
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
     socket.on('disconnect', () => {
-        io.sockets.emit('removeClient', socket.id);
-        gameState.clients.delete(socket.id);
-        console.log(`${socket.id} disconnected`);
         if (socket.id === adminID) {
             clearInterval(emitGameStateInterval);
+            started = false;
             console.log(`ADMIN disconnected`);
         } else {
+            io.sockets.emit('removeClient', socket.id);
+            gameState.clients.delete(socket.id);
             console.log(`${socket.id} disconnected`);
         }
     });
