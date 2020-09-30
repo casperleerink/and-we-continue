@@ -39,7 +39,7 @@ const gameState = {
     gravity: 0.0,
     heat: 0.0,
     center: 0.0,
-    timeBetweenClicks: 10000,
+    clickChainAmount: 4,
 }
 const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
 let adminID;
@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
             z: 1.0,
             c: 0.0,
             visible: false,
+            click: true,
         }
         gameState.clients.set(socket.id, client);
         if (adminID) {
@@ -98,6 +99,16 @@ io.on('connection', (socket) => {
            io.to(adminID).emit("clicked", data);
        } 
     });
+    socket.on('clickChain', data => {
+        if (gameState.clients.has(socket.id)) {
+            gameState.clients.get(socket.id).click = false;
+        }
+        data.forEach(id => {
+            if (gameState.clients.has(id)) {
+                gameState.clients.get(id).click = true;
+            }
+        })
+    })
 
     //admin only messages
     socket.on('adminConnected', (pw) => {
@@ -156,7 +167,10 @@ io.on('connection', (socket) => {
         //takes effect in part 3 only
         gameState.storyLine = line;
     });
-    socket.on('timeBetweenClicks', i => {
-        gameState.timeBetweenClicks = i;
+    socket.on('clickChainAmount', i => {
+        gameState.clickChainAmount = i;
+    });
+    socket.on('end', () => {
+        io.emit('end');
     });
 });

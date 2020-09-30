@@ -58,6 +58,32 @@ export const centerEffect = (me, amount, p) => {
     me.velocity.y += p.sin(angle) * magnitude;
 }
 
+export const getAveragePosition = (me, others) => {
+    let totalX = me.pos.x;
+    let totalY = me.pos.y;
+    others.forEach(token => {
+        totalX += token.pos.x;
+        totalY += token.pos.y;
+    });
+    const position = {
+        x: totalX/(others.size+1),
+        y: totalY/(others.size+1)
+    }
+    if (position.x > 0.8) {
+        position.x = 0.8;
+    }
+    if (position.x < 0.2) {
+        position.x = 0.2;
+    }
+    if (position.y > 0.9) {
+        position.y = 0.9;
+    }
+    if (position.y < 0.1) {
+        position.y = 0.1;
+    }
+    return position;
+}
+
 export const helpText = (p, part, timeDiff) => {
     switch (part) {
         case 1:

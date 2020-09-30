@@ -1,7 +1,13 @@
 import Me from './me.js'
 import Story from './story.js'
 import Token from './token.js'
-import {updatePosition, helpText, heatEffect, gravityEffect, centerEffect} from './util.js'
+import {
+    updatePosition, 
+    helpText, 
+    heatEffect, 
+    gravityEffect, 
+    centerEffect, 
+    getAveragePosition} from './util.js'
 
 const sketchContainer = document.getElementById('sketch-container');
 export const socket = io();
@@ -13,11 +19,14 @@ export const sketch = (p) => {
     let timeSincePart = 0.0;
     let timeLastClicked = -5001;
     let timeSinceLastClicked = 0;
-    let minimumTimeBetweenClicks = 2000;
+    const fadeTextTime = 5000;
     const clickedTimeStamps = [];
+    let clickChainAmount = 4;
     let cnv;
     let me;
     let story;
+
+    let averagePosition = { x: 0.5, y: 0.5 };
 
     let heat = 0.0;
     let gravity = 0.0;
@@ -35,6 +44,7 @@ export const sketch = (p) => {
         //set up canvas standards
         p.frameRate(30); //draw is called around 30 times/second
         p.textSize(18);
+        p.noStroke();
         p.rectMode(p.CENTER);
         p.imageMode(p.CENTER);
         p.textAlign(p.CENTER);
@@ -42,8 +52,15 @@ export const sketch = (p) => {
 
         //mouse click on canvas event
         cnv.mousePressed(() => {
-            if (timeSinceLastClicked > minimumTimeBetweenClicks) {
+            if (me.canClick) {
                 timeLastClicked = p.millis();
+                const othersArr = Array.from(others);
+                const clickChain = [];
+                const amount = othersArr.length < clickChainAmount ? othersArr.length : clickChainAmount;
+                for (let i = 0; i < amount; i++) {
+                    clickChain.push(p.random(othersArr)[0]);   
+                }
+                socket.emit('clickChain', clickChain);
                 if (part === 1) {
                     const storyEnded = story.nextLine();
                     if (storyEnded) {
@@ -65,11 +82,6 @@ export const sketch = (p) => {
                         y: relMouse.y,
                     }
                 }
-                // me.onClick(relMouse.x, relMouse.y, p, () => {
-                //     if (part === 1) {
-                        
-                //     }
-                // });
             }
         });
 
@@ -90,7 +102,7 @@ export const sketch = (p) => {
                         current.pos = { x: client.x, y: client.y};
                         current.visible = client.visible;
                         current.type = client.type;
-                    } 
+                    }
                     //else create a new token
                     else {
                         others.set(id, new Token(client.x, client.y, 5, p, client.type));
@@ -100,7 +112,12 @@ export const sketch = (p) => {
                         //my token!
                         me = new Me(client.x, client.y, 5, p, client.type, socket);
                         story = new Story(me.type);
+                    } else {
+                        me.canClick = client.click;
                     }
+                }
+                if (part === 4) {
+                    averagePosition = getAveragePosition(me, others);
                 }
             }); //end updating clients
             if (data.part !== part) {
@@ -120,7 +137,8 @@ export const sketch = (p) => {
             heat = data.heat;
             gravity = data.gravity;
             toCenter = data.center;
-            minimumTimeBetweenClicks = data.timeBetweenClicks;
+            // fadeTextTime = data.timeBetweenClicks;
+            clickChainAmount = data.clickChainAmount;
 
         });
         //when client leaves clean up data event
@@ -141,14 +159,12 @@ export const sketch = (p) => {
     //draw happens 25 times per second
     p.draw = () => {
         p.clear();
-        p.background(0, 0);
-        p.noStroke();
-        helpText(p, part, timeSincePart);
         const currentTime = p.millis();
         timeSinceLastClicked = currentTime - timeLastClicked;
 
         //ME!!///
         if (me) {
+            p.background(0, me.canClick ? 0 : 50);
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
                 heatEffect(me, others, heat, p); //when heat increases particles can't come close each other
@@ -165,16 +181,16 @@ export const sketch = (p) => {
                     me.localText(p, story.currentLine, 1);
                 }
             });
-            if (part === 1 && timeSinceLastClicked < minimumTimeBetweenClicks) {
-                me.localText(p, story.line, 1- (timeSinceLastClicked/minimumTimeBetweenClicks));
+            if (part === 1 && timeSinceLastClicked < fadeTextTime) {
+                me.localText(p, story.line, 1- (timeSinceLastClicked/fadeTextTime));
             }
             if (part === 3) {
                 const diff = p.millis() - story.timeLineChanged;
-                if (diff < 5000) {
-                    me.localText(p, story.currentLine, 1 - (diff/5000));
+                if (diff < fadeTextTime) {
+                    me.localText(p, story.currentLine, 1 - (diff/fadeTextTime));
                 }
             }
-            me.calcClickDensity(clickedTimeStamps, currentTime, minimumTimeBetweenClicks);
+            me.calcClickDensity(clickedTimeStamps, currentTime, fadeTextTime);
             updatePosition(me, others, part);
         }
 
@@ -191,13 +207,12 @@ export const sketch = (p) => {
         });
 
 
-        //General text
+        //GENERAL TEXT
+        helpText(p, part, timeSincePart);
         if (part === 4) {
-            // const diff = p.millis() - story.timeLineChanged;
-            // if (diff < 5000) {
-            //     story.part4Text(p, 1 - (diff/5000));
-            // }
-            story.part4Text(p, 1);
+            story.part4Text(p, 1, averagePosition);
+        } else if (part === 5) {
+            story.part5Text(p);
         }
     }
 };

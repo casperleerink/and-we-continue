@@ -12,7 +12,7 @@ class Story {
         }
         this._index = -1;
         this._currentLine;
-        this._timeLineChanged = 0.0;
+        this._timeLineChanged = 0;
         this._textArray5 = [];
     }
     get type() {
@@ -64,14 +64,14 @@ class Story {
         p5.text(this._text1[this._index], 0, 0);
     }
 
-    part4Text(p, fade) {
+    part4Text(p, fade, pos) {
         //Show text story.currentLine
         p.push();
         p.noStroke();
         p.fill(0, 0, 0, fade * 255);
-        const textSize = 18 * (p.sin(p.frameCount * 0.03) * 0.2 + 1);
+        const textSize = 18 * (p.sin(p.frameCount * 0.03) * 0.15 + 1);
         p.textSize(textSize);
-        p.text(this._currentLine, p.width*0.5, p.height*0.5);
+        p.text(this._currentLine, p.width*pos.x, p.height*pos.y);
         p.pop();
     }
 

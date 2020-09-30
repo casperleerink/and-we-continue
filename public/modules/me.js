@@ -12,6 +12,7 @@ class Me extends Token {
         this._color[1] = 150;
         this._following = undefined;
         this._socket = socket;
+        this._canClick = true;
         this._clickDensity = 0.0;
     }
 
@@ -63,12 +64,11 @@ class Me extends Token {
             this._socket.emit('newType', t);
         }
     }
-    get clickDensity() {
-        return this._clickDensity;
-    }
-    set clickDensity(f) {
-        this._clickDensity = f;
-    }
+    get canClick() { return this._canClick }
+    set canClick(b) { this._canClick = b }
+
+    get clickDensity() { return this._clickDensity }
+    set clickDensity(f) { this._clickDensity = f }
 
     isMoving() {
         if (this._velocity.x === 0.0 && this._velocity.y === 0.0) {
@@ -145,6 +145,9 @@ class Me extends Token {
                 } else {
                     break;
                 }
+            }
+            if (amtClicked > 1.0) {
+                amtClicked = 1.0;
             }
             this._clickDensity = amtClicked;
             if (amtClicked < 0.1) {

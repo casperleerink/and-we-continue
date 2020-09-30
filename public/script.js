@@ -20,3 +20,8 @@ startButton.addEventListener('click', () => {
     // });
     new p5(sketch, sketchContainer);
 });
+
+
+socket.on('end', () => {
+    window.location.href = "/finality";
+})
