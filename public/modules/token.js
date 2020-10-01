@@ -6,7 +6,7 @@ class Token {
         }
         this._size = size;
         this._type = type;
-        this._color = [6, 90, 150, 190];
+        this._color = [6, 90, 150, 255];
         this._visible = false;
 
         //for ice and river only

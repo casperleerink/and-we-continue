@@ -40,6 +40,7 @@ const gameState = {
     heat: 0.0,
     center: 0.0,
     clickChainAmount: 4,
+    alpha: 255,
 }
 const types = ["ICE", "CLOUD", "PRECIPITATION", "OCEAN", "RIVER", "AQUIFER"];
 let adminID;
@@ -123,6 +124,7 @@ io.on('connection', (socket) => {
             started = true;
             io.emit('start');
             const frameRate = 10;
+            resetGameState(gameState);
             emitGameStateInterval = setInterval(() => {
                 gameState.timeSincePart += 1/frameRate;
                 const clientsArr = Array.from(gameState.clients);
@@ -170,7 +172,25 @@ io.on('connection', (socket) => {
     socket.on('clickChainAmount', i => {
         gameState.clickChainAmount = i;
     });
+    socket.on('alpha', i => {
+        gameState.alpha = i;
+    });
     socket.on('end', () => {
         io.emit('end');
+        clearInterval(emitGameStateInterval);
+        started = false;
     });
 });
+
+
+const resetGameState = (state) => {
+    state.part = 1;
+    state.timeSincePart = 0.0;
+    state.storyLine= "Light finds us,";
+    state.chaos= 0.0;
+    state.gravity= 0.0;
+    state.heat= 0.0;
+    state.center= 0.0;
+    state.clickChainAmount= 4;
+    state.alpha = 255;
+}

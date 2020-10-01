@@ -102,6 +102,7 @@ export const sketch = (p) => {
                         current.pos = { x: client.x, y: client.y};
                         current.visible = client.visible;
                         current.type = client.type;
+                        current.color[3] = data.alpha;
                     }
                     //else create a new token
                     else {
@@ -114,6 +115,7 @@ export const sketch = (p) => {
                         story = new Story(me.type);
                     } else {
                         me.canClick = client.click;
+                        me.color[3] = data.alpha;
                     }
                 }
                 if (part === 4) {
