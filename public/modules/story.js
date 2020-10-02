@@ -79,10 +79,10 @@ class Story {
         p.push();
         p.noStroke();
         p.fill(0);
-        p.textSize(p.width* 0.001);
+        p.textSize(18);
         //for each line in part 5 add it to a loop
         this._textArray5.forEach(l => {
-            p.text(l, p.random() * p.width, p.random() * p.height); //change this to set positions
+            p.text(l, Math.random() * p.width, Math.random() * p.height); //change this to set positions
         });
         p.pop();
     }

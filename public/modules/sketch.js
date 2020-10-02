@@ -133,7 +133,7 @@ export const sketch = (p) => {
                 story.currentLine = data.storyLine;
                 story.timeLineChanged = p.millis();
                 if (part === 5) {
-                    story.part5Array.push(story.currentLine);
+                    story.textArray5.push(story.currentLine);
                 }
             }
             heat = data.heat;
