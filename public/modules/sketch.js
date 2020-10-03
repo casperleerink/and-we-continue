@@ -133,7 +133,7 @@ export const sketch = (p) => {
                 story.currentLine = data.storyLine;
                 story.timeLineChanged = p.millis();
                 if (part === 5) {
-                    story.text5Amount++;
+                    story.text5Amount = story.text5Amount + 1;
                     console.log(text5Amount);
                 }
             }

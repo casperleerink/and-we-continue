@@ -85,9 +85,11 @@ class Story {
         p.fill(0, fade * 255);
         p.textSize(p.width * 0.015);
         //for each line in part 5 add it to a loop
-        this._textPart5.forEach(l => {
+        const amount = this._text5Amount > this._textPart5.length ? this._textPart5.length : this._text5Amount;
+        for (let i = 0; i < amount; i++) {
+            const l = this._textPart5[i];
             p.text(l.text, l.x * p.width, l.y * p.height);
-        });
+        }
         p.pop();
     }
 }
