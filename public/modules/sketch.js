@@ -133,7 +133,8 @@ export const sketch = (p) => {
                 story.currentLine = data.storyLine;
                 story.timeLineChanged = p.millis();
                 if (part === 5) {
-                    story.textArray5.push(story.currentLine);
+                    story.text5Amount++;
+                    console.log(text5Amount);
                 }
             }
             heat = data.heat;
@@ -166,7 +167,7 @@ export const sketch = (p) => {
 
         //ME!!///
         if (me) {
-            p.background(0, me.canClick ? 0 : 50);
+            p.background(0, me.canClick ? 0 : 30);
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
                 heatEffect(me, others, heat, p); //when heat increases particles can't come close each other
@@ -212,9 +213,19 @@ export const sketch = (p) => {
         //GENERAL TEXT
         helpText(p, part, timeSincePart);
         if (part === 4) {
-            story.part4Text(p, 1, averagePosition);
+            const timeDiff = currentTime - story.timeLineChanged;
+            if (timeDiff < fadeTextTime) {
+                const fade = 1 - (timeDiff/fadeTextTime);
+                story.part4Text(p, fade, averagePosition);
+            }
         } else if (part === 5) {
-            story.part5Text(p);
+            if (timeSincePart < 100) {
+                let fade = 1;
+                if (timeSincePart > 80) {
+                    fade = 1 - ((timeSincePart-80)/100.0)
+                }
+                story.part5Text(p, fade);
+            }
         }
     }
 };

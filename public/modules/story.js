@@ -13,7 +13,8 @@ class Story {
         this._index = -1;
         this._currentLine;
         this._timeLineChanged = 0;
-        this._textArray5 = [];
+        this._text5Amount = 0;
+        this._textPart5 = text5Positions();
     }
     get type() {
         return this._type;
@@ -41,8 +42,11 @@ class Story {
         this._timeLineChanged = i;
     }
 
-    get textArray5() {
-        return this._textArray5;
+    get text5Amount() {
+        return this._text5Amount;
+    }
+    set text5Amount(i) {
+        text5Amount = i;
     }
 
     text1EndLine(type) {
@@ -69,20 +73,20 @@ class Story {
         p.push();
         p.noStroke();
         p.fill(0, 0, 0, fade * 255);
-        const textSize = 18 * (p.sin(p.frameCount * 0.03) * 0.15 + 1);
+        const textSize = (p.width * 0.015) * (p.sin(p.frameCount * 0.03) * 0.15 + 1);
         p.textSize(textSize);
         p.text(this._currentLine, p.width*pos.x, p.height*pos.y);
         p.pop();
     }
 
-    part5Text(p) {
+    part5Text(p, fade) {
         p.push();
         p.noStroke();
-        p.fill(0);
-        p.textSize(18);
+        p.fill(0, fade * 255);
+        p.textSize(p.width * 0.015);
         //for each line in part 5 add it to a loop
-        this._textArray5.forEach(l => {
-            p.text(l, Math.random() * p.width, Math.random() * p.height); //change this to set positions
+        this._textPart5.forEach(l => {
+            p.text(l.text, l.x * p.width, l.y * p.height);
         });
         p.pop();
     }
@@ -190,6 +194,37 @@ function getBeginText(type) {
             break;
     }
     return text;
+}
+
+function text5Positions() {
+    return [
+        {x: 0.14, y: 0.08, text: "I am shy" },
+        {x: 0.35, y: 0.06, text: "by my squinted perspective of"},
+        {x: 0.85, y: 0.07, text: "befores."},
+        {x: 0.2, y: 0.14, text: "Look at myself wide."},
+        {x: 0.5, y: 0.11, text: "You- look at me, wider."},
+        {x: 0.7, y: 0.15, text: "Narrow in and you’ve lost sight-"},
+        {x: 0.3, y: 0.22, text: "there is nothing exacting to discover within,"},
+        {x: 0.5, y: 0.21, text: "only a totality"},
+        {x: 0.84, y: 0.21, text: "existing nowhere precisely"},
+        {x: 0.13, y: 0.32, text: "extrapolated never surely"},
+        {x: 0.5, y: 0.28, text: "impacting fully through fullness,"},
+        {x: 0.72, y: 0.34, text: "which slips betweens the dots and points"},
+        {x: 0.24, y: 0.42, text: "of composition and moves like water"},
+        {x: 0.56, y: 0.41, text: "through river bends, between rocks and then-"},
+        {x: 0.83, y: 0.43, text: "into air..."},
+        {x: 0.14, y: 0.52, text: "until it is not there"},
+        {x: 0.46, y: 0.54, text: "any longer but somewhere, some way else"},
+        {x: 0.78, y: 0.59, text: "a bit differently than how you had expected"},
+        {x: 0.35, y: 0.67, text: "and I continue"},
+        {x: 0.5, y: 0.63, text: "and I invent"},
+        {x: 0.65, y: 0.73, text: "and I negotiate"},
+        {x: 0.2, y: 0.72, text: "and even still, I move"},
+        {x: 0.45, y: 0.77, text: "missing you"},
+        {x: 0.7, y: 0.8, text: "until we collide"},
+        {x: 0.4, y: 0.85, text: "next."},
+        {x: 0.6, y: 0.92, text: "again"},
+    ]
 }
 
 export default Story;

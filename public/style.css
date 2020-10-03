@@ -185,3 +185,17 @@ img {
     from {opacity: 0;}
     to {opacity:1 ;}
   }
+
+.finality-ul {
+    padding: 1rem;
+}
+
+.finality-ul li {
+    list-style-type: none;
+    text-align: center;
+    padding-top: 0.5rem;
+}
+
+.finality-ul li a {
+    color: var(--secondary-color);
+}
