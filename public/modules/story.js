@@ -46,7 +46,7 @@ class Story {
         return this._text5Amount;
     }
     set text5Amount(i) {
-        text5Amount = i;
+        this._text5Amount = i;
     }
 
     text1EndLine(type) {
