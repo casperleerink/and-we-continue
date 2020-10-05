@@ -52,37 +52,7 @@ export const sketch = (p) => {
 
         //mouse click on canvas event
         cnv.mousePressed(() => {
-            if (me.canClick) {
-                timeLastClicked = p.millis();
-                const othersArr = Array.from(others);
-                const clickChain = [];
-                const amount = othersArr.length < clickChainAmount ? othersArr.length : clickChainAmount;
-                for (let i = 0; i < amount; i++) {
-                    clickChain.push(p.random(othersArr)[0]);   
-                }
-                socket.emit('clickChain', clickChain);
-                if (part === 1) {
-                    const storyEnded = story.nextLine();
-                    if (storyEnded) {
-                        me.socket.emit('visible', true);
-                    }
-                }
-                if (part > 2) {
-                    clickedTimeStamps.push(timeLastClicked);
-                }
-                
-                const relMouse = {
-                    x: p.mouseX/p.width,
-                    y: p.mouseY/p.height,
-                }
-                socket.emit('clicked', relMouse);
-                me.following = {
-                    pos: {
-                        x: relMouse.x,
-                        y: relMouse.y,
-                    }
-                }
-            }
+            p.myClickFunction(p.mouseX/p.width, p.mouseY/p.height);
         });
 
         //socket io setup// all event listeners for received messages
@@ -152,6 +122,37 @@ export const sketch = (p) => {
         });
     }
 
+    p.myClickFunction = (x, y) => {
+        if (me && me.canClick) {
+            timeLastClicked = p.millis();
+            const othersArr = Array.from(others);
+            const clickChain = [];
+            const amount = othersArr.length < clickChainAmount ? othersArr.length : clickChainAmount;
+            for (let i = 0; i < amount; i++) {
+                clickChain.push(p.random(othersArr)[0]);   
+            }
+            socket.emit('clickChain', clickChain);
+            if (part === 1) {
+                const storyEnded = story.nextLine();
+                if (storyEnded) {
+                    me.socket.emit('visible', true);
+                }
+            }
+            if (part > 2) {
+                clickedTimeStamps.push(timeLastClicked);
+            }
+            
+            const relMouse = {x, y};
+            socket.emit('clicked', relMouse);
+            me.following = {
+                pos: {
+                    x: relMouse.x,
+                    y: relMouse.y,
+                }
+            }
+        }
+    }
+
     //resize canvas
     p.windowResized = () => {
         //when window changes (fullscreen etc..) resize the canvas again
@@ -167,7 +168,11 @@ export const sketch = (p) => {
 
         //ME!!///
         if (me) {
-            p.background(0, me.canClick ? 0 : 30);
+            if (part === 5) {
+                p.background(0, 20);
+            } else {
+                p.background(0, me.canClick ? 0 : 30);
+            }
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
                 heatEffect(me, others, heat, p); //when heat increases particles can't come close each other
@@ -211,7 +216,9 @@ export const sketch = (p) => {
 
 
         //GENERAL TEXT
-        helpText(p, part, timeSincePart);
+        if (me) {
+            helpText(p, part, timeSincePart);
+        }
         if (part === 4) {
             const timeDiff = currentTime - story.timeLineChanged;
             if (timeDiff < fadeTextTime) {
@@ -219,12 +226,20 @@ export const sketch = (p) => {
                 story.part4Text(p, fade, averagePosition);
             }
         } else if (part === 5) {
-            if (timeSincePart < 100) {
+            if (timeSincePart < 130) {
                 let fade = 1;
-                if (timeSincePart > 80) {
-                    fade = 1 - ((timeSincePart-80)/100.0)
+                if (timeSincePart > 120) {
+                    fade = 1 - ((timeSincePart-120)/10.0)
                 }
                 story.part5Text(p, fade);
+            }
+        }
+        
+        //Emulate click on idle exept in part 5 where people don't have to click
+        if (part < 5 && me && me.canClick) {
+            //if user hasn't clicked for 50 seconds, make a random click
+            if (timeSinceLastClicked > 50000) {
+                p.myClickFunction(Math.random(), Math.random());
             }
         }
     }

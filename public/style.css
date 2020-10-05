@@ -115,6 +115,10 @@ body {
     font-size: 0.8rem;
 }
 
+.welcome-container h3 {
+    font-weight: 500;
+}
+
 .extra-padding {
     padding-bottom: 3rem;
 }

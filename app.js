@@ -22,7 +22,7 @@ app.get("/finality", (req, res) => {
 });
 
 http.listen(port, () => {
-    console.log("Server is listening on port: 8000");
+    console.log(`Server is active at port:${port}`);
 });
 
 
@@ -34,7 +34,7 @@ const gameState = {
     clients: new Map(),
     part: 1,
     timeSincePart: 0.0,
-    storyLine: "Light finds us,",
+    storyLine: "",
     chaos: 0.0,
     gravity: 0.0,
     heat: 0.0,
@@ -56,7 +56,9 @@ io.on('connection', (socket) => {
             console.log(`ADMIN disconnected`);
         } else {
             io.sockets.emit('removeClient', socket.id);
-            gameState.clients.delete(socket.id);
+            if (gameState.clients.has(socket.id)) {
+                gameState.clients.delete(socket.id);
+            }
             console.log(`${socket.id} disconnected`);
         }
     });
@@ -186,7 +188,7 @@ io.on('connection', (socket) => {
 const resetGameState = (state) => {
     state.part = 1;
     state.timeSincePart = 0.0;
-    state.storyLine= "Light finds us,";
+    state.storyLine= "";
     state.chaos= 0.0;
     state.gravity= 0.0;
     state.heat= 0.0;
