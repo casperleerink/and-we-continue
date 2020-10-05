@@ -226,10 +226,10 @@ export const sketch = (p) => {
                 story.part4Text(p, fade, averagePosition);
             }
         } else if (part === 5) {
-            if (timeSincePart < 130) {
+            if (timeSincePart < 130000) {
                 let fade = 1;
-                if (timeSincePart > 120) {
-                    fade = 1 - ((timeSincePart-120)/10.0)
+                if (timeSincePart > 120000) {
+                    fade = 1 - ((timeSincePart-120000)/10000)
                 }
                 story.part5Text(p, fade);
             }
