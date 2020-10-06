@@ -10,14 +10,14 @@ class Stream {
       autoplay: false,
     });
     this._online = false;
-    this._ready = false;
+    // this._ready = false;
     this._started = false;
-    this._player.addEventListener(Twitch.Player.READY, () => {
-      this._ready = true;
-      if (this._started) {
-        this.start();
-      }
-    });
+    // this._player.addEventListener(Twitch.Player.READY, () => {
+    //   this._ready = true;
+    //   if (this._started) {
+    //     this.start();
+    //   }
+    // });
     this._player.addEventListener(Twitch.Player.OFFLINE, () => {
       this._online = false;
     });
@@ -25,8 +25,12 @@ class Stream {
       this._online = true;
     });
   }
+
+  get player() {
+    return this._player;
+  }
   start() {
-    if (this._ready) {
+    // if (this._ready) {
       if (this._online) {
         this._player.setVolume(1.0);
         this._player.play();
@@ -34,7 +38,7 @@ class Stream {
         this._container.innerHTML = "";
       }
       this._container.style.display = "block";
-    }
+    // }
     this._started = true;
   }
 

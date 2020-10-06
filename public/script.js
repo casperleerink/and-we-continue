@@ -11,14 +11,17 @@ const streamingPlayer = new Stream(document.getElementById('stream-container'), 
 //add fullscreen support
 fullScreenButton();
 
-startButton.addEventListener('click', () => {
-    welcomePage.style.display = "none";
-    streamingPlayer.start();
-    socket.emit('newClient');
-    // socket.on('start', () => {
-    //     new p5(sketch, sketchContainer);
-    // });
-    new p5(sketch, sketchContainer);
+streamingPlayer.player.addEventListener(Twitch.Player.READY, () => {
+    startButton.style.display = "block";
+    startButton.addEventListener('click', () => {
+        welcomePage.style.display = "none";
+        streamingPlayer.start();
+        socket.emit('newClient');
+        // socket.on('start', () => {
+        //     new p5(sketch, sketchContainer);
+        // });
+        new p5(sketch, sketchContainer);
+    });
 });
 
 
