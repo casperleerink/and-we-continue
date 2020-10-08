@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io({transports: ['websocket']});
 
 socket.on('connect', () => {
     socket.emit('adminConnected', "once-she-dries");
