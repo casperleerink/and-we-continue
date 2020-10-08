@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
         if (socket.id === adminID && !started) {
             started = true;
             io.emit('start');
-            const frameRate = 10;
+            const frameRate = 25;
             resetGameState(gameState);
             emitGameStateInterval = setInterval(() => {
                 gameState.timeSincePart += 1/frameRate;
