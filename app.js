@@ -56,6 +56,7 @@ let adminID;
 let started = false;
 let emitGameStateInterval;
 
+io.set('transports', ['websocket']); //set to use websocket only
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
     socket.on('disconnect', () => {

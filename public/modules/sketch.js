@@ -10,7 +10,7 @@ import {
     getAveragePosition} from './util.js'
 
 const sketchContainer = document.getElementById('sketch-container');
-export const socket = io();
+export const socket = io({transports: ['websocket']});
 
 //The Sketch!
 export const sketch = (p) => {
