@@ -84,21 +84,30 @@ export const getAveragePosition = (me, others) => {
     return position;
 }
 
-export const helpText = (p, part, timeDiff) => {
+export const helpText = (p, part, time) => {
+    const timeVisible = 12000;
     switch (part) {
         case 1:
-            if (timeDiff < 8000) {
+            if (time < timeVisible) {
                 p.push();
-                p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
+                p.fill(0, 0, 0, (1 - (time / timeVisible)) * 255);
                 p.textSize(18);
                 p.text("Guide your blue dot by clicking on the screen", 0.5*p.width, 0.5*p.height);
                 p.pop();
             }
             break;
         case 2:
-            if (timeDiff < 8000) {
+            if (time < timeVisible) {
+                let fade = 1;
+                const fadeTime = timeVisible / 3;
+                const timeTillEnd = timeVisible - time;
+                if (time < fadeTime) {
+                    fade = time / fadeTime
+                } else if (timeTillEnd < fadeTime) {
+                    fade = timeTillEnd / fadeTime;
+                }
                 p.push();
-                p.fill(0, 0, 0, (1 - (timeDiff / 8000)) * 255);
+                p.fill(0, 255*fade);
                 p.textSize(18);
                 p.text("Approach others", 0.5*p.width, 0.5*p.height);
                 p.pop();

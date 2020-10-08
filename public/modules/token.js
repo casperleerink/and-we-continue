@@ -194,7 +194,7 @@ class Token {
     onHover(x, y, p5, callback) {
         if (this._visible) {
             if (this.isWithinBox(x, y, p5)) {
-                this._size = p5.sin(p5.frameCount * 0.06) * 1.5 + 5;
+                this._size = p5.sin(p5.frameCount * 0.06) * 1.5 + p5.width*0.005;
                 if (typeof callback === 'function') {
                     callback();
                 }
@@ -218,6 +218,31 @@ class Token {
         p.fill(color);
         p.textSize(p.width * 0.015);
         p.text(text, this._pos.x*p.width, this._pos.y*p.height-this._size-10);
+        p.pop();
+    }
+
+    part3Text(p, data, time) {
+        p.push();
+        p.noStroke();
+        p.textSize(p.width * 0.015);
+        data.forEach(l => {
+            //only show the line at the right time
+            if (time >= l.s && time <= l.e) {
+                let fade = 1;
+                const fadeTime = (l.e - l.s) / 3;
+                const timeFromStart = time - l.s;
+                const timeTillEnd = l.e - time;
+                if (timeFromStart < fadeTime) {
+                    fade = timeFromStart / fadeTime
+                } else if (timeTillEnd < fadeTime) {
+                    fade = timeTillEnd / fadeTime;
+                }
+                const color = [...this._color];
+                color[3] *= fade;
+                p.fill(color);
+                p.text(l.text, this._pos.x*p.width, this._pos.y*p.height-this._size-10);
+            }
+        });
         p.pop();
     }
 }

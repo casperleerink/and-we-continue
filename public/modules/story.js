@@ -14,6 +14,8 @@ class Story {
         this._currentLine;
         this._timeLineChanged = 0;
         this._text5Amount = 0;
+        this._textPart3 = text3Times();
+        this._textPart4 = text4Times();
         this._textPart5 = text5Positions();
     }
     get type() {
@@ -41,7 +43,15 @@ class Story {
     set timeLineChanged(i) {
         this._timeLineChanged = i;
     }
-
+    get textPart3() {
+        return this._textPart3;
+    }
+    get textPart4() {
+        return this._textPart4;
+    }
+    get textPart5() {
+        return this._textPart5;
+    }
     get text5Amount() {
         return this._text5Amount;
     }
@@ -54,28 +64,36 @@ class Story {
     }
     nextLine() {
         if (this._index === this._text1.length-1) {
-            return true;
-        } else if (this._index === this._text1.length-2) {
-            this._index++;
-            return true;
+            this._index = 0;
         } else {
             this._index++;
-            return false;
         }
     }
 
     draw(p5) {
         p5.text(this._text1[this._index], 0, 0);
     }
-
-    part4Text(p, fade, pos) {
-        //Show text story.currentLine
+    part4Text(p, time, pos) {
         p.push();
         p.noStroke();
-        p.fill(0, 0, 0, fade * 255);
-        const textSize = (p.width * 0.015) * (p.sin(p.frameCount * 0.03) * 0.15 + 1);
-        p.textSize(textSize);
-        p.text(this._currentLine, p.width*pos.x, p.height*pos.y);
+        // p.textSize((p.width * 0.015) * (p.sin(p.frameCount * 0.03) * 0.1 + 1));
+        p.textSize(p.width * 0.015);
+        this._textPart4.forEach(l => {
+            //only show the line at the right time
+            if (time >= l.s && time <= l.e) {
+                let fade = 1;
+                const fadeTime = (l.e - l.s) / 3;
+                const timeFromStart = time - l.s;
+                const timeTillEnd = l.e - time;
+                if (timeFromStart < fadeTime) {
+                    fade = timeFromStart / fadeTime
+                } else if (timeTillEnd < fadeTime) {
+                    fade = timeTillEnd / fadeTime;
+                }
+                p.fill(0, fade*255);
+                p.text(l.text, pos.x*p.width, pos.y*p.height);
+            }
+        });
         p.pop();
     }
 
@@ -196,6 +214,64 @@ function getBeginText(type) {
             break;
     }
     return text;
+}
+
+function text3Times() {
+    return [
+        {text: "until we are found", s: 2000, e: 6000},
+        {text: "tugged down", s: 7000, e: 9000},
+        {text: "with suddenness that", s: 10000, e: 13000},
+        {text: "somehow passes slowly", s: 13500, e: 16000},
+        {text: "then- captured", s: 17000, e: 19500},
+        {text: "in high, harsh places", s: 20000, e: 23000},
+        {text: "harbored for an age of feigned silence until", s: 24000, e: 29000},
+        {text: "we crash and gush and bruise", s: 29500, e: 34000},
+        {text: "salting wounds", s: 34500, e: 37000},
+        {text: "then- spread across dizzying depths to", s: 40000, e: 45000},
+        {text: "bathe and wait", s: 46000, e: 49000},
+        {text: "for that familiar tug", s: 50000, e: 54000},
+        {text: "this time drawn up", s: 55000, e: 58000},
+        {text: "away from thirsty lives", s: 60000, e: 63500},
+        {text: "lived below", s: 64000, e: 68000},
+        {text: "we remember this place", s: 72000, e: 77000},
+        {text: "this time", s: 80000, e: 82500},
+        {text: "but less surely", s: 85000, e: 88000},
+        {text: "less and less surely.", s: 90000, e: 93000},
+        {text: "our movements are becoming", s: 95000, e: 99000},
+        {text: "Off", s: 100000, e: 102000},
+        {text: "in tally, in scope", s: 104000, e: 108000},
+        {text: "in pacing and waiting", s: 110000, e: 114000},
+
+        {text: "Our time chilled feels shorter, further from you.", s: 124000, e: 132000},
+        {text: "Our time hotter feels longer, nearer to you.", s: 138000, e: 146000},
+        {text: "Our time feels thrown, tousled by you.", s: 150000, e: 157000},
+    ]
+}
+
+function text4Times() {
+    return [
+        {text: "more of us gather along certain terrains", s: 2000, e: 8000},
+        {text: "saturating until", s: 10000, e: 14000},
+        {text: "dryness bears a bittersweet remembrance", s: 15000, e: 20000},
+        {text: "for these lands that cannot be wrung of wetness", s: 22000, e: 28000},
+        {text: "and people chase after places that are parched", s: 30000, e: 36000},
+        {text: "fleeing from knee-deep depths of us", s: 38000, e: 45000},
+        {text: "us, who have assured their vitality for so long", s: 47000, e: 52000},
+        {text: "we are fled from", s: 53000, e: 56000},
+        {text: "to a place they can stand", s: 57000, e: 61000},
+
+        {text: "and then in a single turn", s: 70000, e: 74000},
+        {text: "we are missed", s: 74500, e: 79000},
+        {text: "once their throats gasp", s: 80000, e: 83000},
+        {text: "and tongues plead", s: 84000, e: 87000},
+        {text: "and skins itch", s: 88000, e: 90000},
+        {text: "and bellies beckon", s: 91000, e: 94000},
+        {text: "to be sunken once more", s: 95000, e: 99000},
+        {text: "into our depths", s: 100000, e: 103000},
+        {text: "forgetting that their own swimming victories", s: 103500, e: 107000},
+        {text: "have plunged fates deeper towards drowning", s: 107500, e: 110000},
+        {text: "than we ever could have- would have- pushed for", s: 110500, e: 114000},
+    ]
 }
 
 function text5Positions() {

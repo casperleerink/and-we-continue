@@ -76,12 +76,12 @@ export const sketch = (p) => {
                     }
                     //else create a new token
                     else {
-                        others.set(id, new Token(client.x, client.y, 5, p, client.type));
+                        others.set(id, new Token(client.x, client.y, p.width*0.005, p, client.type));
                     }
                 } else {
                     if (!me) {
                         //my token!
-                        me = new Me(client.x, client.y, 5, p, client.type, socket);
+                        me = new Me(client.x, client.y, p.width*0.005, p, client.type, socket);
                         story = new Story(me.type);
                     } else {
                         me.canClick = client.click;
@@ -133,10 +133,7 @@ export const sketch = (p) => {
             }
             socket.emit('clickChain', clickChain);
             if (part === 1) {
-                const storyEnded = story.nextLine();
-                if (storyEnded) {
-                    me.socket.emit('visible', true);
-                }
+                story.nextLine();
             }
             if (part > 2) {
                 clickedTimeStamps.push(timeLastClicked);
@@ -169,7 +166,7 @@ export const sketch = (p) => {
         //ME!!///
         if (me) {
             if (part === 5) {
-                p.background(0, 20);
+                p.background(0, 30);
             } else {
                 p.background(0, me.canClick ? 0 : 30);
             }
@@ -184,19 +181,20 @@ export const sketch = (p) => {
                 if (part === 1) {
                     me.localText(p, story.line, 1);
                 } else if (part === 2) {
-                    me.localText(p, story.text1EndLine(me.type), 1);
-                } else if (part === 3) {
-                    me.localText(p, story.currentLine, 1);
+                    if (timeSincePart < 60000) {
+                        me.localText(p, story.text1EndLine(me.type), 1);
+                    }
                 }
             });
             if (part === 1 && timeSinceLastClicked < fadeTextTime) {
                 me.localText(p, story.line, 1- (timeSinceLastClicked/fadeTextTime));
             }
             if (part === 3) {
-                const diff = p.millis() - story.timeLineChanged;
-                if (diff < fadeTextTime) {
-                    me.localText(p, story.currentLine, 1 - (diff/fadeTextTime));
-                }
+                me.part3Text(p, story.textPart3, timeSincePart);
+                // const diff = p.millis() - story.timeLineChanged;
+                // if (diff < fadeTextTime) {
+                //     me.localText(p, story.currentLine, 1 - (diff/fadeTextTime));
+                // }
             }
             me.calcClickDensity(clickedTimeStamps, currentTime, fadeTextTime);
             updatePosition(me, others, part);
@@ -207,9 +205,11 @@ export const sketch = (p) => {
             token.draw(p);
             token.onHover(p.mouseX/p.width, p.mouseY/p.height, p, () => {
                 if (part <= 2) {
-                    token.localText(p, story.text1EndLine(token.type), 1);
+                    if (timeSincePart < 60000) {
+                        token.localText(p, story.text1EndLine(token.type), 1);
+                    }
                 } else if (part === 3) {
-                    token.localText(p, story.currentLine, 1);
+                    token.part3Text(p, story.textPart3, timeSincePart);
                 }
             });
         });
@@ -220,11 +220,12 @@ export const sketch = (p) => {
             helpText(p, part, timeSincePart);
         }
         if (part === 4) {
-            const timeDiff = currentTime - story.timeLineChanged;
-            if (timeDiff < fadeTextTime) {
-                const fade = 1 - (timeDiff/fadeTextTime);
-                story.part4Text(p, fade, averagePosition);
-            }
+            // const timeDiff = currentTime - story.timeLineChanged;
+            // if (timeDiff < fadeTextTime) {
+            //     const fade = 1 - (timeDiff/fadeTextTime);
+            //     story.part4Text(p, timeSincePart, averagePosition);
+            // }
+            story.part4Text(p, timeSincePart, averagePosition);
         } else if (part === 5) {
             if (timeSincePart < 130000) {
                 let fade = 1;
