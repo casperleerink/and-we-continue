@@ -165,11 +165,7 @@ export const sketch = (p) => {
 
         //ME!!///
         if (me) {
-            if (part === 5) {
-                p.background(0, 30);
-            } else {
-                p.background(0, me.canClick ? 0 : 30);
-            }
+            p.background(0, me.canClick ? 0 : 35);
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
                 heatEffect(me, others, heat, p); //when heat increases particles can't come close each other
@@ -227,13 +223,14 @@ export const sketch = (p) => {
             // }
             story.part4Text(p, timeSincePart, averagePosition);
         } else if (part === 5) {
-            if (timeSincePart < 130000) {
-                let fade = 1;
-                if (timeSincePart > 120000) {
-                    fade = 1 - ((timeSincePart-120000)/10000)
-                }
-                story.part5Text(p, fade);
-            }
+            // if (timeSincePart < 130000) {
+            //     let fade = 1;
+            //     if (timeSincePart > 120000) {
+            //         fade = 1 - ((timeSincePart-120000)/10000)
+            //     }
+            //     story.part5Text(p, fade);
+            // }
+            story.part5Text(p, timeSincePart);
         }
         
         //Emulate click on idle exept in part 5 where people don't have to click
