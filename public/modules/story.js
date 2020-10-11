@@ -12,8 +12,6 @@ class Story {
         }
         this._index = -1;
         this._currentLine;
-        this._timeLineChanged = 0;
-        this._text5Amount = 0;
         this._textPart3 = text3Times();
         this._textPart4 = text4Times();
         this._textPart5 = text5Positions();
@@ -36,13 +34,6 @@ class Story {
     set currentLine(l) {
         this._currentLine = l;
     }
-
-    get timeLineChanged() {
-        return this._timeLineChanged;
-    }
-    set timeLineChanged(i) {
-        this._timeLineChanged = i;
-    }
     get textPart3() {
         return this._textPart3;
     }
@@ -51,12 +42,6 @@ class Story {
     }
     get textPart5() {
         return this._textPart5;
-    }
-    get text5Amount() {
-        return this._text5Amount;
-    }
-    set text5Amount(i) {
-        this._text5Amount = i;
     }
 
     text1EndLine(type) {
@@ -135,8 +120,7 @@ function getBeginText(type) {
                 "cold and compressed",
                 "braced and unmoved",
                 "until this frozen state",
-                "I can no longer",
-                "adhere",
+                "I can no longer adhere",
                 "and I begin to tear",
                 "My time feels stiller here, stiller than you.",
             ]
@@ -145,8 +129,7 @@ function getBeginText(type) {
             text = [
                 "Hanging high, squinting so",
                 "my view is less of a bird and more of",
-                "hazy",
-                "dismemberment",
+                "hazy dismemberment",
                 "I have never liked this part.",
                 "But how radiant weightlessness feels here",
                 "suspending inevitability with aplomb",
@@ -162,7 +145,8 @@ function getBeginText(type) {
                 "I Deluge",
                 "mist",
                 "glisten",
-                "you guess my form, you listen",
+                "you guess my form",
+                "you listen",
                 "to hits and thuds",
                 "I am thunderous",
                 "a cascade of strikes",
@@ -201,7 +185,8 @@ function getBeginText(type) {
                 "I sinuate towards what’s next",
                 "what’s down",
                 "creeping, dripping, draining, gushing towards",
-                "an expansive reservoir that reflect hues of sky’s temperament above",
+                "an expansive reservoir that reflect hues",
+                "of sky’s temperament above",
                 "I am eager to find my way out",
                 "my way through",
                 "My time feels similar here, similar to you."
@@ -235,7 +220,7 @@ function text3Times() {
         {text: "somehow passes slowly", s: 13500, e: 16000},
         {text: "then captured", s: 17000, e: 19500},
         {text: "in high, harsh places", s: 20000, e: 23000},
-        {text: "harbored for a silent age until", s: 24000, e: 29000},
+        {text: "harbored for silent ages until", s: 24000, e: 29000},
         {text: "we crash and gush and bruise", s: 29500, e: 34000},
         {text: "salting wounds", s: 34500, e: 37000},
         {text: "then spread across dizzying depths to", s: 40000, e: 45000},
@@ -249,7 +234,7 @@ function text3Times() {
         {text: "but less surely", s: 85000, e: 88000},
         {text: "less and less surely.", s: 90000, e: 93000},
         {text: "our movements are becoming", s: 95000, e: 99000},
-        {text: "Off", s: 100000, e: 102000},
+        {text: "   Off", s: 100000, e: 102000},
         {text: "in tally, in scope", s: 104000, e: 108000},
         {text: "in pacing and waiting", s: 110000, e: 114000},
 
@@ -310,7 +295,7 @@ function text4Times() {
         {text: "It’s weird", s: 247500, e: 249000},
         {text: "We’re, You and I", s: 249500, e: 252000},
         {text: "Everything is churning and I’m not sure how", s: 253000, e: 256000},
-        {text: "We collide until", s: 260500, e: 262000},
+        {text: "We hold until", s: 260500, e: 262000},
         {text: "We’re together and then", s: 263000, e: 266000},
         {text: "There’s this thing going on that I can see a corner of but not the", s: 266500, e: 270000},
         {text: "Whole springs dry up", s: 280000, e: 285000},

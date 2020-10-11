@@ -97,16 +97,6 @@ export const sketch = (p) => {
                 console.log(`Part: ${part}`);
             }
             timeSincePart = data.timeSincePart * 1000; //convert to ms;
-
-            //only do stuff when line changes
-            if (data.storyLine !== story.currentLine) {
-                story.currentLine = data.storyLine;
-                story.timeLineChanged = p.millis();
-                if (part === 5) {
-                    console.log(story.text5Amount);
-                    story.text5Amount = story.text5Amount + 1;
-                }
-            }
             heat = data.heat;
             gravity = data.gravity;
             toCenter = data.center;
@@ -187,10 +177,6 @@ export const sketch = (p) => {
             }
             if (part === 3) {
                 me.part3Text(p, story.textPart3, timeSincePart);
-                // const diff = p.millis() - story.timeLineChanged;
-                // if (diff < fadeTextTime) {
-                //     me.localText(p, story.currentLine, 1 - (diff/fadeTextTime));
-                // }
             }
             me.calcClickDensity(clickedTimeStamps, currentTime, fadeTextTime);
             updatePosition(me, others, part);
@@ -216,27 +202,15 @@ export const sketch = (p) => {
             helpText(p, part, timeSincePart);
         }
         if (part === 4) {
-            // const timeDiff = currentTime - story.timeLineChanged;
-            // if (timeDiff < fadeTextTime) {
-            //     const fade = 1 - (timeDiff/fadeTextTime);
-            //     story.part4Text(p, timeSincePart, averagePosition);
-            // }
             story.part4Text(p, timeSincePart, averagePosition);
         } else if (part === 5) {
-            // if (timeSincePart < 130000) {
-            //     let fade = 1;
-            //     if (timeSincePart > 120000) {
-            //         fade = 1 - ((timeSincePart-120000)/10000)
-            //     }
-            //     story.part5Text(p, fade);
-            // }
             story.part5Text(p, timeSincePart);
         }
         
         //Emulate click on idle exept in part 5 where people don't have to click
-        if (part < 5 && me && me.canClick) {
-            //if user hasn't clicked for 50 seconds, make a random click
-            if (timeSinceLastClicked > 50000) {
+        if (me && me.canClick) {
+            //if user hasn't clicked for 30 seconds, make a random click
+            if (timeSinceLastClicked > 30000) {
                 p.myClickFunction(Math.random(), Math.random());
             }
         }

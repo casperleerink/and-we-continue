@@ -25,6 +25,9 @@ button {
 body {
     background-color: black;
 }
+a {
+    color: var(--secondary-color);
+}
 
 .container {
     display: flex;
@@ -203,4 +206,26 @@ img {
 
 .finality-ul li a {
     color: var(--secondary-color);
+}
+
+
+.story-container {
+    background-color: white;
+    color: black;
+    padding: 2rem 25%;
+    
+}
+
+.story-container strong {
+    color: black;
+}
+.story-container em {
+    color: black;
+}
+.story-container h3 {
+    text-transform: uppercase;
+    color: black;
+}
+.story-container p {
+    color: black;
 }

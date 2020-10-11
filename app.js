@@ -29,6 +29,9 @@ app.get('/admin', (req, res) => {
 app.get("/finality", (req, res) => {
     res.render('finality.ejs');
 });
+app.get("/story", (req, res) => {
+    res.render('story.ejs');
+});
 
 http.listen(port, () => {
     console.log(`Server is active at port:${port}`);
@@ -43,7 +46,6 @@ const gameState = {
     clients: new Map(),
     part: 1,
     timeSincePart: 0.0,
-    storyLine: "",
     chaos: 0.0,
     gravity: 0.0,
     heat: 0.0,
@@ -177,10 +179,6 @@ io.on('connection', (socket) => {
             gameState.center = f;
         }
     });
-    socket.on('storyLine', line => {
-        //takes effect in part 3 only
-        gameState.storyLine = line;
-    });
     socket.on('clickChainAmount', i => {
         gameState.clickChainAmount = i;
     });
@@ -198,7 +196,6 @@ io.on('connection', (socket) => {
 const resetGameState = (state) => {
     state.part = 1;
     state.timeSincePart = 0.0;
-    state.storyLine= "";
     state.chaos= 0.0;
     state.gravity= 0.0;
     state.heat= 0.0;
