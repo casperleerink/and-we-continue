@@ -1,6 +1,4 @@
-const address = "https://and-we-continue.herokuapp.com/";
-const socket = io(address, {
-    path: '/socket.io-client',
+const socket = io({
     transports: ['websocket']
 });
 

@@ -1,9 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require("http").createServer(app);
-const io = require('socket.io')(http, {
-    path: '/socket.io-client'
-});
+const io = require('socket.io')(http);
 io.set('transports', ['websocket']); //set to use websocket only
 const util = require('./modules/util.js');
 
