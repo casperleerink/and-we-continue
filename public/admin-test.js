@@ -1,4 +1,8 @@
-const socket = io({transports: ['websocket']});
+const address = "https://and-we-continue.herokuapp.com/";
+const socket = io(address, {
+    path: '/socket.io-client',
+    transports: ['websocket']
+});
 
 socket.on('connect', () => {
     socket.emit('adminConnected', "once-she-dries");
@@ -14,7 +18,6 @@ startBtn.addEventListener("click", () => {
 
 partBtn.addEventListener('click', () => {
     const part = parseInt(document.getElementById('part').value);
-    console.log(part);
     socket.emit("changePart", part);
 })
 

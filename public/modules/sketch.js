@@ -10,7 +10,11 @@ import {
     getAveragePosition} from './util.js'
 
 const sketchContainer = document.getElementById('sketch-container');
-export const socket = io({transports: ['websocket']});
+const address = "https://and-we-continue.herokuapp.com/";
+export const socket = io(address, {
+    path: '/socket.io-client',
+    transports: ['websocket']
+});
 
 //The Sketch!
 export const sketch = (p) => {

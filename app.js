@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 const http = require("http").createServer(app);
-var io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    path: '/socket.io-client'
+});
+io.set('transports', ['websocket']); //set to use websocket only
 const util = require('./modules/util.js');
 
 const port = process.env.PORT || 8000;
@@ -58,7 +61,6 @@ let adminID;
 let started = false;
 let emitGameStateInterval;
 
-io.set('transports', ['websocket']); //set to use websocket only
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
     socket.on('disconnect', () => {

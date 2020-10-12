@@ -17,9 +17,6 @@ streamingPlayer.player.addEventListener(Twitch.Player.READY, () => {
         welcomePage.style.display = "none";
         streamingPlayer.start();
         socket.emit('newClient');
-        // socket.on('start', () => {
-        //     new p5(sketch, sketchContainer);
-        // });
         new p5(sketch, sketchContainer);
     });
 });
@@ -27,4 +24,4 @@ streamingPlayer.player.addEventListener(Twitch.Player.READY, () => {
 
 socket.on('end', () => {
     window.location.href = "/finality";
-})
+});
