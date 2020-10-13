@@ -72,37 +72,36 @@ export const sketch = (p) => {
                     if (others.has(id)) {
                         const current = others.get(id);
                         current.pos = { x: client.x, y: client.y};
-                        current.visible = client.visible;
-                        current.type = client.type;
+                        current.visible = client.v;
+                        current.type = client.t;
                         current.color[3] = data.alpha;
                     }
                     //else create a new token
                     else {
-                        others.set(id, new Token(client.x, client.y, p.width*0.005, p, client.type));
+                        others.set(id, new Token(client.x, client.y, p.width*0.005, p, client.t));
                     }
                 } else {
                     if (!me) {
                         //my token!
-                        me = new Me(client.x, client.y, p.width*0.005, p, client.type, socket);
+                        me = new Me(client.x, client.y, p.width*0.005, p, client.t, socket);
                         story = new Story(me.type);
                     } else {
-                        me.canClick = client.click;
+                        me.canClick = client.cl;
                         me.color[3] = data.alpha;
                     }
-                }
-                if (part === 4) {
-                    averagePosition = getAveragePosition(me, others);
                 }
             }); //end updating clients
             if (data.part !== part) {
                 part = data.part;
                 console.log(`Part: ${part}`);
             }
+            if (part === 4) {
+                averagePosition = getAveragePosition(me, others);
+            }
             timeSincePart = data.timeSincePart * 1000; //convert to ms;
             heat = data.heat;
             gravity = data.gravity;
             toCenter = data.center;
-            // fadeTextTime = data.timeBetweenClicks;
             clickChainAmount = data.clickChainAmount;
 
         });
@@ -211,8 +210,9 @@ export const sketch = (p) => {
         
         //Emulate click on idle exept in part 5 where people don't have to click
         if (me && me.canClick) {
-            //if user hasn't clicked for 30 seconds, make a random click
-            if (timeSinceLastClicked > 30000) {
+            //if user hasn't clicked for 30 or 10 seconds, make a random click
+            const maxTimeBetweenClick = part === 4 ? 10000 : 30000;
+            if (timeSinceLastClicked > maxTimeBetweenClick) {
                 p.myClickFunction(Math.random(), Math.random());
             }
         }

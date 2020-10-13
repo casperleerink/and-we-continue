@@ -76,13 +76,13 @@ io.on('connection', (socket) => {
     });
     socket.on('newClient', () => {
         const client = {
-            type: util.random(types),
+            t: util.random(types),
             x: Math.random(),
             y: Math.random(),
             z: 1.0,
             c: 0.0,
-            visible: false,
-            click: true,
+            v: false,
+            cl: true,
         }
         gameState.clients.set(socket.id, client);
         if (adminID) {
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
     });
     socket.on('visible', (b) => {
         if (gameState.clients.has(socket.id)) {
-            gameState.clients.get(socket.id).visible = b;
+            gameState.clients.get(socket.id).v = b;
         }
     });
     socket.on('updatePosition', data => {
@@ -105,8 +105,7 @@ io.on('connection', (socket) => {
     });
     socket.on('newType', t => {
         if (gameState.clients.has(socket.id)) {
-            const client = gameState.clients.get(socket.id);
-            client.type = t;
+            gameState.clients.get(socket.id).t = t;
         }
     });
     socket.on('clicked', data => {
@@ -116,14 +115,14 @@ io.on('connection', (socket) => {
     });
     socket.on('clickChain', data => {
         if (gameState.clients.has(socket.id)) {
-            gameState.clients.get(socket.id).click = false;
+            gameState.clients.get(socket.id).cl = false;
         }
         data.forEach(id => {
             if (gameState.clients.has(id)) {
-                gameState.clients.get(id).click = true;
+                gameState.clients.get(id).cl = true;
             }
-        })
-    })
+        });
+    });
 
     //admin only messages
     socket.on('adminConnected', (pw) => {
@@ -153,8 +152,8 @@ io.on('connection', (socket) => {
             gameState.part = part;
             if (part === 2) {
                 gameState.clients.forEach(client => {
-                    client.visible = true;
-                })
+                    client.v = true;
+                });
             }
             gameState.timeSincePart = 0.0;
         }
