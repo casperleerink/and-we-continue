@@ -208,6 +208,12 @@ img {
     color: var(--secondary-color);
 }
 
+#zoomButton {
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid white;
+    border-radius: 5px;
+}
 
 .story-container {
     background-color: white;
