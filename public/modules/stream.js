@@ -23,6 +23,9 @@ class Stream {
     });
     this._player.addEventListener(Twitch.Player.ONLINE, () => {
       this._online = true;
+      if (this._started) {
+        this.start();
+      }
     });
   }
 
@@ -30,15 +33,12 @@ class Stream {
     return this._player;
   }
   start() {
-    // if (this._ready) {
-      if (this._online) {
-        this._player.setVolume(1.0);
-        this._player.play();
-      } else {
-        this._container.innerHTML = "";
-      }
-      this._container.style.display = "block";
-    // }
+    if (this._online) {
+      this._player.setVolume(1.0);
+      this._player.play();
+    }
+    console.log(this._player);
+    this._container.style.display = "block";
     this._started = true;
   }
 
