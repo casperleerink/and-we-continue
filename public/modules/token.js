@@ -1,3 +1,5 @@
+import {clip} from "./util.js";
+
 class Token {
     constructor(x, y, size, p, type) {
         this._pos = {
@@ -27,16 +29,10 @@ class Token {
         return this._pos;
     }
     set pos(pos) {
-        if (
-            pos.x>=0.0 &&
-            pos.x<=1.0 &&
-            pos.y>=0.0 &&
-            pos.y<=1.0
-        ) {
-            this._pos = pos;
-        } else {
-            console.error('position x and y has to be a number between 0 and 1');
-        }
+        this._pos = {
+            x: clip(pos.x, 0., 1.),
+            y: clip(pos.y, 0., 1.),
+        };
     }
     get size() {
         return this._size;
@@ -248,4 +244,3 @@ class Token {
 }
 
 export default Token;
-

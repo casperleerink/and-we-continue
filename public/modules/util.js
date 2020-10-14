@@ -117,3 +117,7 @@ export const helpText = (p, part, time) => {
             break;
     }
 }
+
+export const clip = (num, min, max) => {
+    return Math.max(min, Math.min(num, max));
+}
