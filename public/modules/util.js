@@ -85,7 +85,7 @@ export const getAveragePosition = (me, others) => {
 }
 
 export const helpText = (p, part, time) => {
-    const timeVisible = 12000;
+    const timeVisible = 20000;
     switch (part) {
         case 1:
             if (time < timeVisible) {

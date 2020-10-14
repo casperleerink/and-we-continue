@@ -156,7 +156,7 @@ export const sketch = (p) => {
 
         //ME!!///
         if (me) {
-            p.background(0, me.canClick ? 0 : 35);
+            p.background(0, me.canClick ? 0 : 60);
             me.follow(p); //set velocity to follow a certain position or other
             if (part > 2) {
                 heatEffect(me, others, heat, p); //when heat increases particles can't come close each other
@@ -210,9 +210,8 @@ export const sketch = (p) => {
         
         //Emulate click on idle exept in part 5 where people don't have to click
         if (me && me.canClick) {
-            //if user hasn't clicked for 30 or 10 seconds, make a random click
-            const maxTimeBetweenClick = part === 4 ? 10000 : 30000;
-            if (timeSinceLastClicked > maxTimeBetweenClick) {
+            //if user hasn't clicked for 30 seconds, make a random click
+            if (timeSinceLastClicked > 30000) {
                 p.myClickFunction(Math.random(), Math.random());
             }
         }

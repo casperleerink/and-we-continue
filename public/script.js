@@ -17,7 +17,9 @@ streamingPlayer.player.addEventListener(Twitch.Player.READY, () => {
         welcomePage.style.display = "none";
         streamingPlayer.start();
         socket.emit('newClient');
-        new p5(sketch, sketchContainer);
+        setTimeout(() => {
+            new p5(sketch, sketchContainer);
+        }, 1000)
     });
 });
 

@@ -182,18 +182,13 @@ img {
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 }
-  
-  /* Add animation (fade in the popup) */
-  @-webkit-keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-  
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
-  }
 
+.finality-container {
+    opacity: 0;
+    -webkit-animation: fadeIn 3s ease-in;
+    animation: fadeIn 3s ease-in;
+    animation-fill-mode: forwards;
+}
 .finality-ul {
     padding: 1rem;
 }
@@ -234,4 +229,22 @@ img {
 }
 .story-container p {
     color: black;
+}
+
+#storyButton {
+    background-color: white;
+    border: 1px solid black;
+}
+
+
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
