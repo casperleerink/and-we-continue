@@ -37,7 +37,6 @@ class Stream {
       this._player.setVolume(1.0);
       this._player.play();
     }
-    console.log(this._player);
     this._container.style.display = "block";
     this._started = true;
   }

@@ -140,7 +140,7 @@ function getBeginText(type) {
             break;
         case "PRECIPITATION":
             text = [
-                "Free,",
+                "Free",
                 "fall",
                 "I Deluge",
                 "mist",
